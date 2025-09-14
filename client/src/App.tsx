@@ -14,6 +14,7 @@ import AdvertisingChannels from "@/pages/advertising-channels";
 import AdvertisingKeywords from "@/pages/advertising-keywords";
 import AdvertisingReports from "@/pages/advertising-reports";
 import Cashflow from "@/pages/cashflow";
+import CashFlow from "@/pages/cash-flow";
 import CustomerService from "@/pages/customer-service";
 import CustomerAnalytics from "@/pages/customer-analytics";
 import Growth from "@/pages/growth";
@@ -32,6 +33,7 @@ function Router() {
         <Route path="/advertising/keywords" component={AdvertisingKeywords} />
         <Route path="/advertising/reports" component={AdvertisingReports} />
         <Route path="/cashflow" component={Cashflow} />
+        <Route path="/cash-flow" component={CashFlow} />
         <Route path="/customer-service" component={CustomerService} />
         <Route path="/customer-analytics" component={CustomerAnalytics} />
         <Route path="/growth" component={Growth} />

@@ -17,7 +17,8 @@ import {
   Sun,
   Bell,
   Settings,
-  MoreHorizontal
+  MoreHorizontal,
+  Wallet
 } from "lucide-react";
 
 const navigation = [
@@ -25,6 +26,7 @@ const navigation = [
   { name: "E-commerce Management", href: "/ecommerce", icon: ShoppingCart },
   { name: "Advertising Performance", href: "/advertising", icon: Megaphone },
   { name: "Cash Flow Management", href: "/cashflow", icon: DollarSign },
+  { name: "Cash Flow", href: "/cash-flow", icon: Wallet },
   { name: "Customer Service Analytics", href: "/customer-service", icon: Headphones },
   { name: "Customer Analytics", href: "/customer-analytics", icon: Users },
   { name: "Growth Reports", href: "/growth", icon: BarChart },
@@ -35,6 +37,7 @@ const sectionTitles: Record<string, { title: string; subtitle: string }> = {
   '/ecommerce': { title: 'E-commerce Management', subtitle: 'Sales performance and order management' },
   '/advertising': { title: 'Advertising Performance', subtitle: 'Campaign metrics and ROI analysis' },
   '/cashflow': { title: 'Cash Flow Management', subtitle: 'Financial inflows and outflows tracking' },
+  '/cash-flow': { title: 'Cash Flow', subtitle: 'Cash forecasting and transaction monitoring' },
   '/customer-service': { title: 'Customer Service Analytics', subtitle: 'Support metrics and satisfaction scores' },
   '/customer-analytics': { title: 'Customer Analytics', subtitle: 'Customer behavior and lifetime value' },
   '/growth': { title: 'Growth Reports', subtitle: 'Business growth metrics and trends' }
