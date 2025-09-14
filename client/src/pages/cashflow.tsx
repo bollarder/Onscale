@@ -10,8 +10,15 @@ export default function Cashflow() {
     queryKey: ["/api/metrics/cashflow"]
   });
 
-  // Sample cash flow chart data
-  const cashflowData = {
+  const { data: chartData } = useQuery({
+    queryKey: ["/api/charts/cashflow"]
+  });
+
+  // Get specific chart data with fallbacks
+  const cashflowChart = Array.isArray(chartData) ? chartData.find((chart: any) => chart.chartId === 'cashflowChart') : null;
+
+  // Sample fallback data for charts
+  const sampleCashflowData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
     datasets: [
       {
@@ -92,7 +99,7 @@ export default function Cashflow() {
       >
         <InteractiveChart
           type="line"
-          data={cashflowData}
+          data={cashflowChart?.data || sampleCashflowData}
           testId="chart-cashflow"
         />
       </ChartCard>
