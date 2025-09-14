@@ -95,6 +95,11 @@
 
 @media (max-width: 768px) {
   .sidebar-hidden {
-    transform: translateX(-100%);
+    transform: translateX(-100%) !important;
+    pointer-events: none !important;
+  }
+  
+  .sidebar-hidden * {
+    pointer-events: none !important;
   }
 }
