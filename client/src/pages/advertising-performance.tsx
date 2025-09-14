@@ -5,7 +5,7 @@ import { InteractiveChart } from "@/components/interactive-chart";
 import { Eye, MousePointer, DollarSign, TrendingUp } from "lucide-react";
 
 
-export default function Advertising() {
+export default function AdvertisingPerformance() {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["/api/metrics/advertising"]
   });

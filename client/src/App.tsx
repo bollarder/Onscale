@@ -7,7 +7,12 @@ import { ThemeProvider } from "@/components/theme-provider";
 import DashboardLayout from "@/components/dashboard-layout";
 import Dashboard from "@/pages/dashboard";
 import Ecommerce from "@/pages/ecommerce";
-import Advertising from "@/pages/advertising";
+import AdvertisingHub from "@/pages/advertising-hub";
+import AdvertisingPerformance from "@/pages/advertising-performance";
+import AdvertisingCampaigns from "@/pages/advertising-campaigns";
+import AdvertisingChannels from "@/pages/advertising-channels";
+import AdvertisingKeywords from "@/pages/advertising-keywords";
+import AdvertisingReports from "@/pages/advertising-reports";
 import Cashflow from "@/pages/cashflow";
 import CustomerService from "@/pages/customer-service";
 import CustomerAnalytics from "@/pages/customer-analytics";
@@ -20,7 +25,12 @@ function Router() {
       <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/ecommerce" component={Ecommerce} />
-        <Route path="/advertising" component={Advertising} />
+        <Route path="/advertising" component={AdvertisingHub} />
+        <Route path="/advertising/performance" component={AdvertisingPerformance} />
+        <Route path="/advertising/campaigns" component={AdvertisingCampaigns} />
+        <Route path="/advertising/channels" component={AdvertisingChannels} />
+        <Route path="/advertising/keywords" component={AdvertisingKeywords} />
+        <Route path="/advertising/reports" component={AdvertisingReports} />
         <Route path="/cashflow" component={Cashflow} />
         <Route path="/customer-service" component={CustomerService} />
         <Route path="/customer-analytics" component={CustomerAnalytics} />
