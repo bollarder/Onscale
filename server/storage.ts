@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type DashboardMetric, type InsertDashboardMetric, type ChartData, type InsertChartData } from "@shared/schema";
+import { type User, type InsertUser, type DashboardMetric, type InsertDashboardMetric, type ChartData, type InsertChartData, type Order, type InsertOrder, type Inventory, type InsertInventory } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -7,17 +7,24 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   getDashboardMetrics(section: string): Promise<DashboardMetric[]>;
   getChartData(section: string, chartId?: string): Promise<ChartData[]>;
+  getOrders(filter?: { status?: string; search?: string; channel?: string; limit?: number; offset?: number }): Promise<{ items: Order[]; totalCount: number }>;
+  getInventoryAlerts(): Promise<Inventory[]>;
+  getOrderStatusCounts(): Promise<{ status: string; count: number; change?: string }[]>;
 }
 
 export class MemStorage implements IStorage {
   private users: Map<string, User>;
   private dashboardMetrics: Map<string, DashboardMetric>;
   private chartData: Map<string, ChartData>;
+  private orders: Map<string, Order>;
+  private inventory: Map<string, Inventory>;
 
   constructor() {
     this.users = new Map();
     this.dashboardMetrics = new Map();
     this.chartData = new Map();
+    this.orders = new Map();
+    this.inventory = new Map();
     this.seedData();
   }
 
@@ -113,6 +120,38 @@ export class MemStorage implements IStorage {
     charts.forEach(chart => {
       this.chartData.set(chart.id, chart);
     });
+
+    // Seed orders data
+    const ordersData: Order[] = [
+      { id: randomUUID(), orderNumber: "ORD-001", customerId: "C001", customerName: "John Smith", customerEmail: "john@example.com", productName: "Smart Watch Pro", quantity: 2, amount: "599.98", status: "New", channel: "Website", orderDate: new Date(Date.now() - 1000 * 60 * 30), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-002", customerId: "C002", customerName: "Sarah Johnson", customerEmail: "sarah@example.com", productName: "Wireless Headphones", quantity: 1, amount: "199.99", status: "Preparing", channel: "Mobile App", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 2), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-003", customerId: "C003", customerName: "Mike Wilson", customerEmail: "mike@example.com", productName: "Gaming Laptop", quantity: 1, amount: "1299.99", status: "Shipping", channel: "Website", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 24), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-004", customerId: "C004", customerName: "Emily Davis", customerEmail: "emily@example.com", productName: "Smartphone", quantity: 1, amount: "899.99", status: "Delivered", channel: "Mobile App", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 48), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-005", customerId: "C005", customerName: "David Brown", customerEmail: "david@example.com", productName: "Tablet", quantity: 1, amount: "499.99", status: "New", channel: "Amazon", orderDate: new Date(Date.now() - 1000 * 60 * 15), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-006", customerId: "C006", customerName: "Lisa Wang", customerEmail: "lisa@example.com", productName: "Bluetooth Speaker", quantity: 3, amount: "179.97", status: "Preparing", channel: "Website", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 4), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-007", customerId: "C007", customerName: "Tom Anderson", customerEmail: "tom@example.com", productName: "Fitness Tracker", quantity: 2, amount: "398.00", status: "Shipping", channel: "eBay", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 36), updatedAt: new Date() },
+      { id: randomUUID(), orderNumber: "ORD-008", customerId: "C008", customerName: "Anna Clark", customerEmail: "anna@example.com", productName: "Digital Camera", quantity: 1, amount: "699.99", status: "Delivered", channel: "Website", orderDate: new Date(Date.now() - 1000 * 60 * 60 * 72), updatedAt: new Date() },
+    ];
+
+    ordersData.forEach(order => {
+      this.orders.set(order.id, order);
+    });
+
+    // Seed inventory data
+    const inventoryData: Inventory[] = [
+      { id: randomUUID(), sku: "SW-001", productName: "Smart Watch Pro", currentStock: 5, minStock: 10, maxStock: 100, unitPrice: "299.99", category: "Electronics", updatedAt: new Date() },
+      { id: randomUUID(), sku: "WH-002", productName: "Wireless Headphones", currentStock: 25, minStock: 15, maxStock: 80, unitPrice: "199.99", category: "Electronics", updatedAt: new Date() },
+      { id: randomUUID(), sku: "GL-003", productName: "Gaming Laptop", currentStock: 3, minStock: 5, maxStock: 20, unitPrice: "1299.99", category: "Computers", updatedAt: new Date() },
+      { id: randomUUID(), sku: "SP-004", productName: "Smartphone", currentStock: 8, minStock: 10, maxStock: 50, unitPrice: "899.99", category: "Electronics", updatedAt: new Date() },
+      { id: randomUUID(), sku: "TB-005", productName: "Tablet", currentStock: 15, minStock: 8, maxStock: 40, unitPrice: "499.99", category: "Electronics", updatedAt: new Date() },
+      { id: randomUUID(), sku: "BS-006", productName: "Bluetooth Speaker", currentStock: 2, minStock: 12, maxStock: 60, unitPrice: "59.99", category: "Audio", updatedAt: new Date() },
+      { id: randomUUID(), sku: "FT-007", productName: "Fitness Tracker", currentStock: 20, minStock: 8, maxStock: 35, unitPrice: "199.00", category: "Wearables", updatedAt: new Date() },
+      { id: randomUUID(), sku: "DC-008", productName: "Digital Camera", currentStock: 7, minStock: 6, maxStock: 25, unitPrice: "699.99", category: "Photography", updatedAt: new Date() },
+    ];
+
+    inventoryData.forEach(item => {
+      this.inventory.set(item.id, item);
+    });
   }
 
   async getUser(id: string): Promise<User | undefined> {
@@ -142,6 +181,68 @@ export class MemStorage implements IStorage {
     return Array.from(this.chartData.values()).filter(
       chart => chart.section === section && (!chartId || chart.chartId === chartId)
     );
+  }
+
+  async getOrders(filter?: { status?: string; search?: string; channel?: string; limit?: number; offset?: number }): Promise<{ items: Order[]; totalCount: number }> {
+    let orders = Array.from(this.orders.values());
+    
+    // Apply status filter
+    if (filter?.status) {
+      orders = orders.filter(order => order.status === filter.status);
+    }
+    
+    // Apply search filter (order number, customer name, product name)
+    if (filter?.search) {
+      const searchTerm = filter.search.toLowerCase();
+      orders = orders.filter(order => 
+        order.orderNumber.toLowerCase().includes(searchTerm) ||
+        order.customerName.toLowerCase().includes(searchTerm) ||
+        order.productName.toLowerCase().includes(searchTerm)
+      );
+    }
+    
+    // Apply channel filter
+    if (filter?.channel) {
+      orders = orders.filter(order => order.channel === filter.channel);
+    }
+    
+    // Sort by order date (newest first)
+    orders.sort((a, b) => {
+      const dateA = a.orderDate ? new Date(a.orderDate).getTime() : 0;
+      const dateB = b.orderDate ? new Date(b.orderDate).getTime() : 0;
+      return dateB - dateA;
+    });
+    
+    const totalCount = orders.length;
+    const offset = filter?.offset || 0;
+    const limit = filter?.limit || 50;
+    
+    const items = orders.slice(offset, offset + limit);
+    
+    return { items, totalCount };
+  }
+
+  async getInventoryAlerts(): Promise<Inventory[]> {
+    return Array.from(this.inventory.values()).filter(
+      item => item.currentStock <= item.minStock
+    );
+  }
+
+  async getOrderStatusCounts(): Promise<{ status: string; count: number; change?: string }[]> {
+    const orders = Array.from(this.orders.values());
+    const statusCounts = new Map<string, number>();
+    
+    orders.forEach(order => {
+      const count = statusCounts.get(order.status) || 0;
+      statusCounts.set(order.status, count + 1);
+    });
+    
+    return [
+      { status: "New", count: statusCounts.get("New") || 0, change: "+12%" },
+      { status: "Preparing", count: statusCounts.get("Preparing") || 0, change: "+8%" },
+      { status: "Shipping", count: statusCounts.get("Shipping") || 0, change: "+15%" },
+      { status: "Delivered", count: statusCounts.get("Delivered") || 0, change: "+22%" },
+    ];
   }
 }
 

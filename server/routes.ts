@@ -27,6 +27,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get orders with optional filtering
+  app.get("/api/orders", async (req, res) => {
+    try {
+      const { status, search, channel, limit, offset } = req.query;
+      const filter = {
+        status: status as string,
+        search: search as string,
+        channel: channel as string,
+        limit: limit ? parseInt(limit as string) : undefined,
+        offset: offset ? parseInt(offset as string) : undefined,
+      };
+      const result = await storage.getOrders(filter);
+      res.json(result);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch orders" });
+    }
+  });
+
+  // Get inventory alerts
+  app.get("/api/inventory/alerts", async (req, res) => {
+    try {
+      const alerts = await storage.getInventoryAlerts();
+      res.json(alerts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch inventory alerts" });
+    }
+  });
+
+  // Get order status counts
+  app.get("/api/orders/status-counts", async (req, res) => {
+    try {
+      const statusCounts = await storage.getOrderStatusCounts();
+      res.json(statusCounts);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch order status counts" });
+    }
+  });
+
   const httpServer = createServer(app);
 
   return httpServer;
