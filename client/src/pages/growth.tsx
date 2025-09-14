@@ -1,35 +1,40 @@
 import { useQuery } from "@tanstack/react-query";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
+import { InteractiveChart } from "@/components/interactive-chart";
 import { TrendingUp, Globe, Rocket } from "lucide-react";
-import { useEffect, useRef } from "react";
-
-// Mock Chart.js implementation
-const createChart = (canvasRef: HTMLCanvasElement, config: any) => {
-  if (!canvasRef) return;
-  
-  const ctx = canvasRef.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = 'hsl(217 91% 60%)';
-    ctx.fillRect(10, 10, 100, 50);
-    ctx.fillStyle = 'hsl(210 40% 98%)';
-    ctx.font = '12px Inter';
-    ctx.fillText('Growth Chart', 20, 40);
-  }
-};
 
 export default function Growth() {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["/api/metrics/growth"]
   });
 
-  const growthChartRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (growthChartRef.current) {
-      createChart(growthChartRef.current, {});
-    }
-  }, []);
+  // Sample growth chart data
+  const growthData = {
+    labels: ['Q1 2023', 'Q2 2023', 'Q3 2023', 'Q4 2023', 'Q1 2024', 'Q2 2024'],
+    datasets: [{
+      label: 'Revenue Growth (%)',
+      data: [15.2, 18.7, 22.1, 28.4, 32.6, 35.9],
+      borderColor: 'rgba(16, 185, 129, 1)',
+      backgroundColor: 'rgba(16, 185, 129, 0.1)',
+      fill: true,
+      tension: 0.4
+    }, {
+      label: 'User Growth (%)',
+      data: [12.8, 16.3, 19.9, 25.1, 29.7, 33.2],
+      borderColor: 'rgba(59, 130, 246, 1)',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      fill: true,
+      tension: 0.4
+    }, {
+      label: 'Market Share (%)',
+      data: [18.5, 19.2, 20.8, 22.3, 23.1, 23.7],
+      borderColor: 'rgba(245, 158, 11, 1)',
+      backgroundColor: 'rgba(245, 158, 11, 0.1)',
+      fill: true,
+      tension: 0.4
+    }]
+  };
 
   if (isLoading) {
     return (
@@ -90,9 +95,11 @@ export default function Growth() {
         filterOptions={["Last 6 months", "Last year", "Last 2 years"]}
         testId="chart-growth-metrics-overview"
       >
-        <div className="h-96">
-          <canvas ref={growthChartRef} className="w-full h-full" data-testid="canvas-growth-chart" />
-        </div>
+        <InteractiveChart
+          type="line"
+          data={growthData}
+          testId="chart-growth-interactive"
+        />
       </ChartCard>
     </div>
   );

@@ -2,23 +2,9 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent } from "@/components/ui/card";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
+import { InteractiveChart } from "@/components/interactive-chart";
 import { DollarSign, Users, ShoppingBag, TrendingUp, ShoppingCart, UserPlus, AlertTriangle } from "lucide-react";
-import { useEffect, useRef } from "react";
 
-// Mock Chart.js implementation for demonstration
-const createChart = (canvasRef: HTMLCanvasElement, config: any) => {
-  if (!canvasRef) return;
-  
-  // This is a placeholder - in a real app, you'd use Chart.js
-  const ctx = canvasRef.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = 'hsl(217 91% 60%)';
-    ctx.fillRect(10, 10, 100, 50);
-    ctx.fillStyle = 'hsl(210 40% 98%)';
-    ctx.font = '12px Inter';
-    ctx.fillText('Chart Placeholder', 20, 40);
-  }
-};
 
 export default function Dashboard() {
   const { data: metrics, isLoading } = useQuery({
@@ -29,20 +15,36 @@ export default function Dashboard() {
     queryKey: ["/api/charts/dashboard"]
   });
 
-  const revenueChartRef = useRef<HTMLCanvasElement>(null);
-  const performanceChartRef = useRef<HTMLCanvasElement>(null);
+  // Get specific chart data with fallbacks
+  const revenueChart = Array.isArray(chartData) ? chartData.find((chart: any) => chart.chartId === 'revenueChart') : null;
+  const performanceChart = Array.isArray(chartData) ? chartData.find((chart: any) => chart.chartId === 'performanceChart') : null;
 
-  useEffect(() => {
-    if (revenueChartRef.current && chartData) {
-      createChart(revenueChartRef.current, {});
-    }
-  }, [chartData]);
+  // Sample fallback data for charts
+  const sampleRevenueData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Revenue',
+      data: [45000, 52000, 48000, 61000, 55000, 67000],
+      borderColor: 'rgba(59, 130, 246, 1)',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      fill: true,
+      tension: 0.3
+    }]
+  };
 
-  useEffect(() => {
-    if (performanceChartRef.current && chartData) {
-      createChart(performanceChartRef.current, {});
-    }
-  }, [chartData]);
+  const samplePerformanceData = {
+    labels: ['Sales', 'Marketing', 'Support', 'Development'],
+    datasets: [{
+      label: 'Performance',
+      data: [35, 25, 20, 20],
+      backgroundColor: [
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(239, 68, 68, 0.8)'
+      ]
+    }]
+  };
 
   if (isLoading) {
     return (
@@ -122,9 +124,11 @@ export default function Dashboard() {
           className="xl:col-span-2"
           testId="chart-revenue-trend"
         >
-          <div className="h-80">
-            <canvas ref={revenueChartRef} className="w-full h-full" data-testid="canvas-revenue-chart" />
-          </div>
+          <InteractiveChart
+            type="line"
+            data={revenueChart?.data || sampleRevenueData}
+            testId="chart-revenue"
+          />
         </ChartCard>
         
         <Card data-testid="card-top-products">
@@ -228,7 +232,11 @@ export default function Dashboard() {
           testId="chart-performance-metrics"
         >
           <div className="h-64">
-            <canvas ref={performanceChartRef} className="w-full h-full" data-testid="canvas-performance-chart" />
+            <InteractiveChart
+              type="doughnut"
+              data={performanceChart?.data || samplePerformanceData}
+              testId="chart-performance"
+            />
           </div>
         </ChartCard>
       </div>

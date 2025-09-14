@@ -1,42 +1,45 @@
 import { useQuery } from "@tanstack/react-query";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
+import { InteractiveChart } from "@/components/interactive-chart";
 import { Smile, Clock, Ticket, CheckCircle } from "lucide-react";
-import { useEffect, useRef } from "react";
-
-// Mock Chart.js implementation
-const createChart = (canvasRef: HTMLCanvasElement, config: any) => {
-  if (!canvasRef) return;
-  
-  const ctx = canvasRef.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = 'hsl(217 91% 60%)';
-    ctx.fillRect(10, 10, 100, 50);
-    ctx.fillStyle = 'hsl(210 40% 98%)';
-    ctx.font = '12px Inter';
-    ctx.fillText('Service Chart', 20, 40);
-  }
-};
 
 export default function CustomerService() {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["/api/metrics/customer-service"]
   });
 
-  const ticketVolumeChartRef = useRef<HTMLCanvasElement>(null);
-  const issueCategoriesChartRef = useRef<HTMLCanvasElement>(null);
+  // Sample customer service chart data
+  const ticketVolumeData = {
+    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+    datasets: [{
+      label: 'Tickets Created',
+      data: [65, 85, 92, 78, 95, 45, 32],
+      backgroundColor: 'rgba(59, 130, 246, 0.8)',
+      borderColor: 'rgba(59, 130, 246, 1)',
+      borderWidth: 2
+    }, {
+      label: 'Tickets Resolved',
+      data: [58, 78, 88, 82, 89, 48, 35],
+      backgroundColor: 'rgba(16, 185, 129, 0.8)',
+      borderColor: 'rgba(16, 185, 129, 1)',
+      borderWidth: 2
+    }]
+  };
 
-  useEffect(() => {
-    if (ticketVolumeChartRef.current) {
-      createChart(ticketVolumeChartRef.current, {});
-    }
-  }, []);
-
-  useEffect(() => {
-    if (issueCategoriesChartRef.current) {
-      createChart(issueCategoriesChartRef.current, {});
-    }
-  }, []);
+  const issueCategoriesData = {
+    labels: ['Technical', 'Billing', 'Account', 'Product', 'General'],
+    datasets: [{
+      data: [35, 25, 20, 15, 5],
+      backgroundColor: [
+        'rgba(239, 68, 68, 0.8)',
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(139, 92, 246, 0.8)'
+      ]
+    }]
+  };
 
   if (isLoading) {
     return (
@@ -107,18 +110,22 @@ export default function CustomerService() {
           hasFilter={true}
           testId="chart-ticket-volume"
         >
-          <div className="h-80">
-            <canvas ref={ticketVolumeChartRef} className="w-full h-full" data-testid="canvas-ticket-volume-chart" />
-          </div>
+          <InteractiveChart
+            type="bar"
+            data={ticketVolumeData}
+            testId="chart-ticket-volume"
+          />
         </ChartCard>
         
         <ChartCard
           title="Issue Categories"
           testId="chart-issue-categories"
         >
-          <div className="h-80">
-            <canvas ref={issueCategoriesChartRef} className="w-full h-full" data-testid="canvas-issue-categories-chart" />
-          </div>
+          <InteractiveChart
+            type="pie"
+            data={issueCategoriesData}
+            testId="chart-issue-categories"
+          />
         </ChartCard>
       </div>
     </div>

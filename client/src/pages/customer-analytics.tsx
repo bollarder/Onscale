@@ -1,42 +1,39 @@
 import { useQuery } from "@tanstack/react-query";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
+import { InteractiveChart } from "@/components/interactive-chart";
 import { UserPlus, RotateCcw, PieChart, Heart } from "lucide-react";
-import { useEffect, useRef } from "react";
 
-// Mock Chart.js implementation
-const createChart = (canvasRef: HTMLCanvasElement, config: any) => {
-  if (!canvasRef) return;
-  
-  const ctx = canvasRef.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = 'hsl(217 91% 60%)';
-    ctx.fillRect(10, 10, 100, 50);
-    ctx.fillStyle = 'hsl(210 40% 98%)';
-    ctx.font = '12px Inter';
-    ctx.fillText('Customer Chart', 20, 40);
-  }
-};
 
 export default function CustomerAnalytics() {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["/api/metrics/customer-analytics"]
   });
 
-  const acquisitionChartRef = useRef<HTMLCanvasElement>(null);
-  const segmentsChartRef = useRef<HTMLCanvasElement>(null);
+  // Sample customer analytics chart data
+  const acquisitionData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'New Customers',
+      data: [1247, 1580, 1320, 1890, 2100, 1950],
+      borderColor: 'rgba(59, 130, 246, 1)',
+      backgroundColor: 'rgba(59, 130, 246, 0.1)',
+      fill: true
+    }]
+  };
 
-  useEffect(() => {
-    if (acquisitionChartRef.current) {
-      createChart(acquisitionChartRef.current, {});
-    }
-  }, []);
-
-  useEffect(() => {
-    if (segmentsChartRef.current) {
-      createChart(segmentsChartRef.current, {});
-    }
-  }, []);
+  const segmentsData = {
+    labels: ['Premium', 'Standard', 'Basic', 'Trial'],
+    datasets: [{
+      data: [35, 45, 15, 5],
+      backgroundColor: [
+        'rgba(245, 158, 11, 0.8)',
+        'rgba(59, 130, 246, 0.8)',
+        'rgba(16, 185, 129, 0.8)',
+        'rgba(156, 163, 175, 0.8)'
+      ]
+    }]
+  };
 
   if (isLoading) {
     return (
@@ -107,18 +104,22 @@ export default function CustomerAnalytics() {
           hasFilter={true}
           testId="chart-customer-acquisition"
         >
-          <div className="h-80">
-            <canvas ref={acquisitionChartRef} className="w-full h-full" data-testid="canvas-customer-acquisition-chart" />
-          </div>
+          <InteractiveChart
+            type="line"
+            data={acquisitionData}
+            testId="chart-customer-acquisition"
+          />
         </ChartCard>
         
         <ChartCard
           title="Customer Segments"
           testId="chart-customer-segments"
         >
-          <div className="h-80">
-            <canvas ref={segmentsChartRef} className="w-full h-full" data-testid="canvas-customer-segments-chart" />
-          </div>
+          <InteractiveChart
+            type="doughnut"
+            data={segmentsData}
+            testId="chart-customer-segments"
+          />
         </ChartCard>
       </div>
     </div>

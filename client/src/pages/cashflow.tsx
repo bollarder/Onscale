@@ -1,35 +1,35 @@
 import { useQuery } from "@tanstack/react-query";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
+import { InteractiveChart } from "@/components/interactive-chart";
 import { TrendingDown, TrendingUp, Wallet } from "lucide-react";
-import { useEffect, useRef } from "react";
 
-// Mock Chart.js implementation
-const createChart = (canvasRef: HTMLCanvasElement, config: any) => {
-  if (!canvasRef) return;
-  
-  const ctx = canvasRef.getContext('2d');
-  if (ctx) {
-    ctx.fillStyle = 'hsl(217 91% 60%)';
-    ctx.fillRect(10, 10, 100, 50);
-    ctx.fillStyle = 'hsl(210 40% 98%)';
-    ctx.font = '12px Inter';
-    ctx.fillText('Cash Flow Chart', 20, 40);
-  }
-};
 
 export default function Cashflow() {
   const { data: metrics, isLoading } = useQuery({
     queryKey: ["/api/metrics/cashflow"]
   });
 
-  const cashflowChartRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (cashflowChartRef.current) {
-      createChart(cashflowChartRef.current, {});
-    }
-  }, []);
+  // Sample cash flow chart data
+  const cashflowData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    datasets: [
+      {
+        label: 'Cash Inflow',
+        data: [847000, 920000, 780000, 890000, 950000, 1020000, 880000, 940000, 1050000, 980000, 1100000, 1200000],
+        borderColor: 'rgba(16, 185, 129, 1)',
+        backgroundColor: 'rgba(16, 185, 129, 0.2)',
+        fill: true
+      },
+      {
+        label: 'Cash Outflow',
+        data: [624000, 680000, 590000, 650000, 720000, 760000, 640000, 700000, 780000, 730000, 820000, 850000],
+        borderColor: 'rgba(239, 68, 68, 1)',
+        backgroundColor: 'rgba(239, 68, 68, 0.2)',
+        fill: true
+      }
+    ]
+  };
 
   if (isLoading) {
     return (
@@ -90,9 +90,11 @@ export default function Cashflow() {
         filterOptions={["Last 30 days", "Last 90 days", "Last 6 months", "Last year"]}
         testId="chart-cash-flow-trend"
       >
-        <div className="h-96">
-          <canvas ref={cashflowChartRef} className="w-full h-full" data-testid="canvas-cashflow-chart" />
-        </div>
+        <InteractiveChart
+          type="line"
+          data={cashflowData}
+          testId="chart-cashflow"
+        />
       </ChartCard>
     </div>
   );
