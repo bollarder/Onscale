@@ -190,6 +190,48 @@ export class DatabaseStorage implements IStorage {
             data: [120000, 150000, 180000, 160000, 200000, 240000]
           }]
         }
+      },
+      {
+        chartId: "adSpendChart",
+        section: "advertising",
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+          datasets: [
+            {
+              label: 'Ad Spend',
+              data: [12000, 15000, 18000, 16000, 20000, 24000],
+              borderColor: 'rgba(239, 68, 68, 1)',
+              backgroundColor: 'rgba(239, 68, 68, 0.1)',
+              yAxisID: 'y'
+            },
+            {
+              label: 'Revenue',
+              data: [48000, 75000, 90000, 80000, 100000, 120000],
+              borderColor: 'rgba(16, 185, 129, 1)',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              yAxisID: 'y1'
+            }
+          ]
+        }
+      },
+      {
+        chartId: "campaignChart",
+        section: "advertising",
+        data: {
+          labels: ['Google Ads', 'Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'YouTube'],
+          datasets: [{
+            label: 'Campaign Performance',
+            data: [2400000, 1800000, 1200000, 800000, 600000, 900000],
+            backgroundColor: [
+              'rgba(59, 130, 246, 0.8)',
+              'rgba(16, 185, 129, 0.8)',
+              'rgba(245, 158, 11, 0.8)',
+              'rgba(239, 68, 68, 0.8)',
+              'rgba(139, 92, 246, 0.8)',
+              'rgba(236, 72, 153, 0.8)'
+            ]
+          }]
+        }
       }
     ];
 

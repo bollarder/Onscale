@@ -10,8 +10,16 @@ export default function Advertising() {
     queryKey: ["/api/metrics/advertising"]
   });
 
-  // Sample chart data for advertising metrics
-  const adSpendData = {
+  const { data: chartData } = useQuery({
+    queryKey: ["/api/charts/advertising"]
+  });
+
+  // Get specific chart data with fallbacks
+  const adSpendChart = Array.isArray(chartData) ? chartData.find((chart: any) => chart.chartId === 'adSpendChart') : null;
+  const campaignChart = Array.isArray(chartData) ? chartData.find((chart: any) => chart.chartId === 'campaignChart') : null;
+
+  // Sample fallback data for charts
+  const sampleAdSpendData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
     datasets: [
       {
@@ -31,7 +39,7 @@ export default function Advertising() {
     ]
   };
 
-  const campaignData = {
+  const sampleCampaignData = {
     labels: ['Google Ads', 'Facebook', 'Instagram', 'LinkedIn', 'Twitter', 'YouTube'],
     datasets: [{
       label: 'Campaign Performance',
@@ -118,7 +126,7 @@ export default function Advertising() {
         >
           <InteractiveChart
             type="line"
-            data={adSpendData}
+            data={adSpendChart?.data || sampleAdSpendData}
             options={{
               scales: {
                 y: {
@@ -147,7 +155,7 @@ export default function Advertising() {
         >
           <InteractiveChart
             type="doughnut"
-            data={campaignData}
+            data={campaignChart?.data || sampleCampaignData}
             testId="chart-campaign"
           />
         </ChartCard>
