@@ -29,7 +29,7 @@ ChartJS.register(
 );
 
 interface InteractiveChartProps {
-  type: 'line' | 'bar' | 'doughnut' | 'pie';
+  type: 'line' | 'bar' | 'doughnut' | 'pie' | 'scatter';
   data: any;
   options?: any;
   className?: string;

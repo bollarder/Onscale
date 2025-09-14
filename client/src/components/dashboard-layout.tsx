@@ -18,13 +18,15 @@ import {
   Bell,
   Settings,
   MoreHorizontal,
-  Wallet
+  Wallet,
+  Target
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "E-commerce Management", href: "/ecommerce", icon: ShoppingCart },
   { name: "Advertising Performance", href: "/advertising", icon: Megaphone },
+  { name: "Marketing Hub", href: "/marketing", icon: Target },
   { name: "Cash Flow Management", href: "/cashflow", icon: DollarSign },
   { name: "Cash Flow", href: "/cash-flow", icon: Wallet },
   { name: "Customer Service Analytics", href: "/customer-service", icon: Headphones },
@@ -36,6 +38,7 @@ const sectionTitles: Record<string, { title: string; subtitle: string }> = {
   '/': { title: 'Dashboard Overview', subtitle: 'Real-time business insights and metrics' },
   '/ecommerce': { title: 'E-commerce Management', subtitle: 'Sales performance and order management' },
   '/advertising': { title: 'Advertising Performance', subtitle: 'Campaign metrics and ROI analysis' },
+  '/marketing': { title: 'Marketing Hub', subtitle: 'Competitive positioning and market intelligence' },
   '/cashflow': { title: 'Cash Flow Management', subtitle: 'Financial inflows and outflows tracking' },
   '/cash-flow': { title: 'Cash Flow', subtitle: 'Cash forecasting and transaction monitoring' },
   '/customer-service': { title: 'Customer Service Analytics', subtitle: 'Support metrics and satisfaction scores' },

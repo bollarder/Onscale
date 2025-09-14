@@ -13,6 +13,11 @@ import AdvertisingCampaigns from "@/pages/advertising-campaigns";
 import AdvertisingChannels from "@/pages/advertising-channels";
 import AdvertisingKeywords from "@/pages/advertising-keywords";
 import AdvertisingReports from "@/pages/advertising-reports";
+import MarketingHub from "@/pages/marketing-hub";
+import MarketingPositioning from "@/pages/marketing-positioning";
+import MarketingPricing from "@/pages/marketing-pricing";
+import MarketingIntelligence from "@/pages/marketing-intelligence";
+import MarketingStrategy from "@/pages/marketing-strategy";
 import Cashflow from "@/pages/cashflow";
 import CashFlow from "@/pages/cash-flow";
 import CustomerService from "@/pages/customer-service";
@@ -32,6 +37,11 @@ function Router() {
         <Route path="/advertising/channels" component={AdvertisingChannels} />
         <Route path="/advertising/keywords" component={AdvertisingKeywords} />
         <Route path="/advertising/reports" component={AdvertisingReports} />
+        <Route path="/marketing" component={MarketingHub} />
+        <Route path="/marketing/positioning" component={MarketingPositioning} />
+        <Route path="/marketing/pricing" component={MarketingPricing} />
+        <Route path="/marketing/intelligence" component={MarketingIntelligence} />
+        <Route path="/marketing/strategy" component={MarketingStrategy} />
         <Route path="/cashflow" component={Cashflow} />
         <Route path="/cash-flow" component={CashFlow} />
         <Route path="/customer-service" component={CustomerService} />
