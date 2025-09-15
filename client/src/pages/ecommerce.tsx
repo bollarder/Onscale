@@ -1,472 +1,244 @@
-import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { 
-  Calendar, 
-  RefreshCw, 
-  Download, 
-  Filter, 
-  Search, 
-  Package, 
-  Clock, 
-  Truck, 
-  CheckCircle, 
-  AlertTriangle,
-  TrendingUp,
-  FileText,
-  Mail,
-  MoreHorizontal,
-  ChevronLeft,
-  ChevronRight
-} from "lucide-react";
+import { ArrowRight, Package, Tag, Ruler, BarChart3, ShoppingCart, Clock, AlertTriangle, TrendingUp } from "lucide-react";
+import { Link } from "wouter";
 
 export default function Ecommerce() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState("all");
-  const [channelFilter, setChannelFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 50;
-
-  // API Queries
-  const { data: orderStatusCounts, isLoading: statusLoading } = useQuery({
-    queryKey: ["/api/orders/status-counts"]
-  });
-
-  const { data: ordersResponse, isLoading: ordersLoading } = useQuery({
-    queryKey: ["/api/orders", { 
-      status: statusFilter === "all" ? undefined : statusFilter,
-      search: searchTerm || undefined,
-      channel: channelFilter === "all" ? undefined : channelFilter,
-      limit: itemsPerPage,
-      offset: (currentPage - 1) * itemsPerPage
-    }]
-  });
-
-  const { data: inventoryAlerts, isLoading: inventoryLoading } = useQuery({
-    queryKey: ["/api/inventory/alerts"]
-  });
-
-  // Extract server response data
-  const orders = (ordersResponse && typeof ordersResponse === 'object' && 'items' in ordersResponse) ? ordersResponse.items as any[] : [];
-  const totalOrdersCount = (ordersResponse && typeof ordersResponse === 'object' && 'totalCount' in ordersResponse) ? ordersResponse.totalCount as number : 0;
-  
-  // Reset to page 1 when filters change
-  React.useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm, statusFilter, channelFilter]);
-
-  const getStatusCounts = () => {
-    if (!Array.isArray(orderStatusCounts)) {
-      return { new: 0, preparing: 0, shipping: 0, delivered: 0 };
+  const hubCards = [
+    {
+      title: "주문 관리",
+      href: "/ecommerce/orders",
+      icon: Package,
+      emoji: "📦",
+      stats: ["47개 신규", "156개 준비중", "234개 배송중"],
+      actionText: "주문 보기"
+    },
+    {
+      title: "SKU 분석",
+      href: "/ecommerce/sku-analytics",
+      icon: Tag,
+      emoji: "🏷️",
+      stats: ["156개 SKU", "오늘 2,847개 유닛"],
+      actionText: "SKU 분석"
+    },
+    {
+      title: "포장 최적화",
+      href: "/ecommerce/packaging",
+      icon: Ruler,
+      emoji: "📏",
+      stats: ["87% 효율성", "234개 박스 필요"],
+      actionText: "포장 최적화"
+    },
+    {
+      title: "재고 관리",
+      href: "/ecommerce/inventory",
+      icon: BarChart3,
+      emoji: "📊",
+      stats: ["12개 낮은 재고 알림", "94% 재고 보유"],
+      actionText: "재고 관리"
+    },
+    {
+      title: "발주 관리",
+      href: "/ecommerce/procurement",
+      icon: ShoppingCart,
+      emoji: "🛒",
+      stats: ["8개 원자재 임계치 이하", "3건 발주 대기"],
+      actionText: "발주 관리"
     }
-    return {
-      new: orderStatusCounts.find((s: any) => s.status === "New")?.count || 0,
-      preparing: orderStatusCounts.find((s: any) => s.status === "Preparing")?.count || 0,
-      shipping: orderStatusCounts.find((s: any) => s.status === "Shipping")?.count || 0,
-      delivered: orderStatusCounts.find((s: any) => s.status === "Delivered")?.count || 0,
-    };
-  };
-
-  const statusCounts = getStatusCounts();
-
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "new": return "bg-blue-500/10 text-blue-500 border-blue-500/20";
-      case "preparing": return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20";
-      case "shipping": return "bg-purple-500/10 text-purple-500 border-purple-500/20";
-      case "delivered": return "bg-green-500/10 text-green-500 border-green-500/20";
-      default: return "bg-gray-500/10 text-gray-500 border-gray-500/20";
-    }
-  };
-
-  const exportOrders = () => {
-    // Mock export functionality
-    const csvContent = orders.map((order: any) => 
-      `${order.orderNumber},${order.customerName},${order.productName},${order.quantity},${order.amount},${order.status}`
-    ).join('\n');
-    console.log("Exporting orders:", csvContent);
-  };
-
-  if (statusLoading || ordersLoading) {
-    return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="h-32 bg-card rounded-xl animate-pulse" />
-          ))}
-        </div>
-      </div>
-    );
-  }
+  ];
 
   return (
     <div className="space-y-8">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <div className="flex items-center text-sm text-muted-foreground mb-2" data-testid="breadcrumb-ecommerce">
-            <span>Dashboard</span>
-            <ChevronRight className="w-4 h-4 mx-2" />
-            <span className="text-foreground">E-commerce Management</span>
-          </div>
-          <h1 className="text-2xl font-bold text-foreground" data-testid="heading-ecommerce-management">
-            E-commerce Management
-          </h1>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" data-testid="button-date-range">
-            <Calendar className="w-4 h-4 mr-2" />
-            Last 30 days
-          </Button>
-          <Button variant="outline" size="sm" data-testid="button-refresh">
-            <RefreshCw className="w-4 h-4" />
-          </Button>
-        </div>
-      </div>
-
-      {/* Order Status Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <Card data-testid="card-new-orders">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <Package className="w-5 h-5 text-blue-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground" data-testid="text-new-orders-label">New Orders</p>
-                  <p className="text-2xl font-bold text-foreground" data-testid="text-new-orders-count">{statusCounts.new}</p>
-                  <p className="text-sm text-green-500" data-testid="text-new-orders-change">+12% vs yesterday</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-preparing-orders">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-yellow-500/10 rounded-lg flex items-center justify-center">
-                  <Clock className="w-5 h-5 text-yellow-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground" data-testid="text-preparing-orders-label">Preparing</p>
-                  <p className="text-2xl font-bold text-foreground" data-testid="text-preparing-orders-count">{statusCounts.preparing}</p>
-                  <p className="text-sm text-muted-foreground" data-testid="text-preparing-orders-time">2.3 hours avg processing</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-shipping-orders">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                  <Truck className="w-5 h-5 text-purple-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground" data-testid="text-shipping-orders-label">Shipping</p>
-                  <p className="text-2xl font-bold text-foreground" data-testid="text-shipping-orders-count">{statusCounts.shipping}</p>
-                  <p className="text-sm text-green-500" data-testid="text-shipping-orders-rate">94% on-time delivery</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card data-testid="card-delivered-orders">
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <CheckCircle className="w-5 h-5 text-green-500" />
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground" data-testid="text-delivered-orders-label">Delivered</p>
-                  <p className="text-2xl font-bold text-foreground" data-testid="text-delivered-orders-count">{statusCounts.delivered}</p>
-                  <p className="text-sm text-green-500" data-testid="text-delivered-orders-rating">4.2/5 customer rating</p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Main Content Area */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Order Management Table */}
-        <div className="lg:col-span-3">
-          <Card data-testid="card-order-management">
-            <CardHeader>
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <CardTitle className="text-lg font-semibold" data-testid="heading-order-management">
-                  Order Management
-                </CardTitle>
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" onClick={exportOrders} data-testid="button-export-orders">
-                    <Download className="w-4 h-4 mr-2" />
-                    Export CSV
-                  </Button>
-                  <Button variant="outline" size="sm" data-testid="button-bulk-actions">
-                    <FileText className="w-4 h-4 mr-2" />
-                    Bulk Update
-                  </Button>
-                </div>
-              </div>
-              
-              {/* Search and Filters */}
-              <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input
-                    placeholder="Search orders, customers, or products..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-10"
-                    data-testid="input-search-orders"
-                  />
-                </div>
-                <Select value={statusFilter} onValueChange={setStatusFilter} data-testid="select-status-filter">
-                  <SelectTrigger className="w-full sm:w-40">
-                    <SelectValue placeholder="Status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Status</SelectItem>
-                    <SelectItem value="New">New</SelectItem>
-                    <SelectItem value="Preparing">Preparing</SelectItem>
-                    <SelectItem value="Shipping">Shipping</SelectItem>
-                    <SelectItem value="Delivered">Delivered</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={channelFilter} onValueChange={setChannelFilter} data-testid="select-channel-filter">
-                  <SelectTrigger className="w-full sm:w-40">
-                    <SelectValue placeholder="Channel" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">All Channels</SelectItem>
-                    <SelectItem value="Website">Website</SelectItem>
-                    <SelectItem value="Mobile App">Mobile App</SelectItem>
-                    <SelectItem value="Amazon">Amazon</SelectItem>
-                    <SelectItem value="eBay">eBay</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </CardHeader>
-            <CardContent>
-              {/* Orders Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full" data-testid="table-orders">
-                  <thead>
-                    <tr className="border-b border-border">
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Order ID</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Customer</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Product</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Quantity</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Amount</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Date</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Status</th>
-                      <th className="text-left text-sm font-medium text-muted-foreground pb-3">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {orders.map((order: any) => (
-                      <tr key={order.id} className="border-b border-border" data-testid={`row-order-${order.orderNumber}`}>
-                        <td className="py-3 text-sm font-medium text-foreground" data-testid={`text-order-id-${order.orderNumber}`}>
-                          {order.orderNumber}
-                        </td>
-                        <td className="py-3">
-                          <div data-testid={`text-customer-${order.customerName.replace(/\s+/g, '-').toLowerCase()}`}>
-                            <p className="text-sm font-medium text-foreground">{order.customerName}</p>
-                            <p className="text-xs text-muted-foreground">{order.customerEmail}</p>
-                          </div>
-                        </td>
-                        <td className="py-3 text-sm text-foreground" data-testid={`text-product-${order.productName.replace(/\s+/g, '-').toLowerCase()}`}>
-                          {order.productName}
-                        </td>
-                        <td className="py-3 text-sm text-foreground" data-testid={`text-quantity-${order.orderNumber}`}>
-                          {order.quantity}
-                        </td>
-                        <td className="py-3 text-sm font-semibold text-foreground" data-testid={`text-amount-${order.orderNumber}`}>
-                          ${order.amount}
-                        </td>
-                        <td className="py-3 text-sm text-muted-foreground" data-testid={`text-date-${order.orderNumber}`}>
-                          {new Date(order.orderDate).toLocaleDateString()}
-                        </td>
-                        <td className="py-3" data-testid={`badge-status-${order.orderNumber}`}>
-                          <Badge className={`border ${getStatusColor(order.status)}`}>
-                            {order.status}
-                          </Badge>
-                        </td>
-                        <td className="py-3">
-                          <Button variant="ghost" size="sm" data-testid={`button-actions-${order.orderNumber}`}>
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              
-              {/* Pagination */}
-              <div className="flex items-center justify-between mt-6">
-                <div className="text-sm text-muted-foreground" data-testid="text-pagination-info">
-                  Showing {totalOrdersCount === 0 ? 0 : ((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalOrdersCount)} of {totalOrdersCount} orders
-                </div>
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-                    disabled={currentPage === 1}
-                    data-testid="button-prev-page"
-                  >
-                    <ChevronLeft className="w-4 h-4" />
-                    Previous
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setCurrentPage(p => p + 1)}
-                    disabled={currentPage * itemsPerPage >= totalOrdersCount}
-                    data-testid="button-next-page"
-                  >
-                    Next
-                    <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Side Widgets */}
-        <div className="space-y-6">
-          {/* Inventory Alerts */}
-          <Card data-testid="card-inventory-alerts">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center" data-testid="heading-inventory-alerts">
-                <AlertTriangle className="w-5 h-5 mr-2 text-amber-500" />
-                Inventory Alerts
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {Array.isArray(inventoryAlerts) ? inventoryAlerts.slice(0, 4).map((item: any) => (
-                  <div key={item.id} className="flex items-center justify-between p-3 bg-amber-500/5 rounded-lg border border-amber-500/20" data-testid={`alert-${item.sku}`}>
-                    <div>
-                      <p className="text-sm font-medium text-foreground" data-testid={`text-alert-product-${item.sku}`}>
-                        {item.productName}
-                      </p>
-                      <p className="text-xs text-muted-foreground" data-testid={`text-alert-stock-${item.sku}`}>
-                        Stock: {item.currentStock}/{item.minStock}
-                      </p>
+      {/* Hub Cards Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {hubCards.map((card, index) => (
+          <Link key={index} href={card.href}>
+            <Card className="cursor-pointer hover:shadow-lg transition-all duration-200 group hover:scale-[1.02]" data-testid={`card-${card.title.replace(/\s+/g, '-').toLowerCase()}`}>
+              <CardHeader className="pb-3">
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
+                      <span className="text-2xl">{card.emoji}</span>
                     </div>
-                    <Button variant="outline" size="sm" data-testid={`button-reorder-${item.sku}`}>
-                      Reorder
-                    </Button>
+                    <span className="text-lg font-semibold text-foreground">{card.title}</span>
                   </div>
-                )) : null}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Shipping Performance */}
-          <Card data-testid="card-shipping-performance">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold flex items-center" data-testid="heading-shipping-performance">
-                <TrendingUp className="w-5 h-5 mr-2 text-blue-500" />
-                Shipping Performance
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between" data-testid="shipping-fedex">
-                  <span className="text-sm text-foreground">FedEx</span>
-                  <span className="text-sm font-semibold text-green-500">96.2%</span>
+                  <ArrowRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {card.stats.map((stat, statIndex) => (
+                    <div key={statIndex} className="flex items-center text-sm text-muted-foreground">
+                      <div className="w-2 h-2 bg-primary/50 rounded-full mr-2"></div>
+                      {stat}
+                    </div>
+                  ))}
                 </div>
-                <div className="flex items-center justify-between" data-testid="shipping-ups">
-                  <span className="text-sm text-foreground">UPS</span>
-                  <span className="text-sm font-semibold text-green-500">94.8%</span>
-                </div>
-                <div className="flex items-center justify-between" data-testid="shipping-dhl">
-                  <span className="text-sm text-foreground">DHL</span>
-                  <span className="text-sm font-semibold text-yellow-500">91.3%</span>
-                </div>
-                <div className="flex items-center justify-between" data-testid="shipping-usps">
-                  <span className="text-sm text-foreground">USPS</span>
-                  <span className="text-sm font-semibold text-red-500">87.1%</span>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Top Products */}
-          <Card data-testid="card-top-products">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold" data-testid="heading-top-products">
-                Top Products
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <div className="flex items-center justify-between" data-testid="top-product-1">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Smart Watch Pro</p>
-                    <p className="text-xs text-muted-foreground">Stock: 5 units</p>
-                  </div>
-                  <p className="text-sm font-semibold text-foreground">$284K</p>
-                </div>
-                <div className="flex items-center justify-between" data-testid="top-product-2">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Gaming Laptop</p>
-                    <p className="text-xs text-muted-foreground">Stock: 3 units</p>
-                  </div>
-                  <p className="text-sm font-semibold text-foreground">$178K</p>
-                </div>
-                <div className="flex items-center justify-between" data-testid="top-product-3">
-                  <div>
-                    <p className="text-sm font-medium text-foreground">Wireless Headphones</p>
-                    <p className="text-xs text-muted-foreground">Stock: 25 units</p>
-                  </div>
-                  <p className="text-sm font-semibold text-foreground">$192K</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Quick Actions */}
-          <Card data-testid="card-quick-actions">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold" data-testid="heading-quick-actions">
-                Quick Actions
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-2">
-                <Button variant="outline" className="w-full justify-start" data-testid="button-generate-labels">
-                  <Package className="w-4 h-4 mr-2" />
-                  Generate Shipping Labels
+                <Button 
+                  variant="ghost" 
+                  className="w-full mt-4 text-primary hover:text-primary justify-start pl-0"
+                  data-testid={`button-${card.actionText.replace(/\s+/g, '-').toLowerCase()}`}
+                >
+                  {card.actionText} →
                 </Button>
-                <Button variant="outline" className="w-full justify-start" data-testid="button-communication-templates">
-                  <Mail className="w-4 h-4 mr-2" />
-                  Communication Templates
-                </Button>
-                <Button variant="outline" className="w-full justify-start" data-testid="button-inventory-report">
-                  <FileText className="w-4 h-4 mr-2" />
-                  Inventory Report
-                </Button>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      {/* Overview Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-6">
+        {/* Daily Orders */}
+        <Card data-testid="chart-daily-orders">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium flex items-center">
+              <Package className="w-4 h-4 mr-2 text-blue-500" />
+              일일 주문
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-2">
+              <div className="text-2xl font-bold text-foreground">437</div>
+              <div className="text-sm text-green-500 flex items-center">
+                <TrendingUp className="w-3 h-3 mr-1" />
+                +12% vs 어제
               </div>
-            </CardContent>
-          </Card>
-        </div>
+              <div className="h-16 bg-gradient-to-r from-blue-500/20 to-blue-600/20 rounded-lg flex items-end p-2">
+                <div className="flex items-end space-x-1 w-full">
+                  {[40, 65, 55, 80, 70, 90, 100].map((height, i) => (
+                    <div
+                      key={i}
+                      className="bg-blue-500 rounded-sm flex-1"
+                      style={{ height: `${height}%` }}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Top SKU */}
+        <Card data-testid="chart-top-sku">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium flex items-center">
+              <Tag className="w-4 h-4 mr-2 text-purple-500" />
+              상위 SKU
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-foreground">SKU-001</span>
+                <span className="text-sm font-semibold text-foreground">2,847</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-foreground">SKU-024</span>
+                <span className="text-sm font-semibold text-foreground">1,923</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-foreground">SKU-016</span>
+                <span className="text-sm font-semibold text-foreground">1,456</span>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                총 156개 SKU 활성
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Packaging Gauge */}
+        <Card data-testid="chart-packaging-gauge">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium flex items-center">
+              <Ruler className="w-4 h-4 mr-2 text-orange-500" />
+              포장 효율성
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="text-2xl font-bold text-foreground">87%</div>
+              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                <div className="bg-orange-500 h-2 rounded-full" style={{ width: '87%' }}></div>
+              </div>
+              <div className="text-sm text-muted-foreground">
+                234개 박스 필요
+              </div>
+              <div className="text-xs text-green-500">
+                +3% vs 지난주
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Procurement Alerts */}
+        <Card data-testid="chart-procurement-alerts">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-medium flex items-center">
+              <ShoppingCart className="w-4 h-4 mr-2 text-red-500" />
+              발주 알림
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <AlertTriangle className="w-4 h-4 mr-2 text-red-500" />
+                  <span className="text-sm text-foreground">임계치 이하</span>
+                </div>
+                <span className="text-sm font-semibold text-red-500">8개</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center">
+                  <Clock className="w-4 h-4 mr-2 text-yellow-500" />
+                  <span className="text-sm text-foreground">발주 대기</span>
+                </div>
+                <span className="text-sm font-semibold text-yellow-500">3건</span>
+              </div>
+              <div className="text-xs text-muted-foreground mt-2">
+                총 47개 원자재 추적 중
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Stats Row */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <Card data-testid="stat-total-orders">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">1,437</div>
+              <div className="text-sm text-muted-foreground">총 주문</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card data-testid="stat-revenue">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">₩4.2M</div>
+              <div className="text-sm text-muted-foreground">이번 달 매출</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card data-testid="stat-avg-processing">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">2.3h</div>
+              <div className="text-sm text-muted-foreground">평균 처리시간</div>
+            </div>
+          </CardContent>
+        </Card>
+        <Card data-testid="stat-fulfillment-rate">
+          <CardContent className="p-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-foreground">94%</div>
+              <div className="text-sm text-muted-foreground">배송 성공률</div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );
