@@ -2,7 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { KPICard } from "@/components/kpi-card";
 import { ChartCard } from "@/components/chart-card";
 import { InteractiveChart } from "@/components/interactive-chart";
-import { TrendingUp, Globe, Rocket } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Link } from "wouter";
+import { TrendingUp, Globe, Rocket, CloudRain, Calendar, Newspaper, Star, ArrowRight } from "lucide-react";
 
 export default function Growth() {
   const { data: metrics, isLoading } = useQuery({
@@ -58,6 +61,101 @@ export default function Growth() {
 
   return (
     <div className="space-y-8">
+      {/* Growth Intelligence Hub Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Card className="transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer" data-testid="card-weather-forecast">
+          <Link href="/growth/forecast">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <CloudRain className="w-5 h-5 text-blue-500" />
+                </div>
+                <CardTitle className="text-lg">날씨 및 예측</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>🌦️ 차주 날씨 영향</p>
+                <p>📈 매출 예측 조정</p>
+                <p>🎯 날씨 기반 분석</p>
+              </div>
+              <Button variant="ghost" className="w-full mt-4 text-blue-600 hover:text-blue-700" data-testid="button-view-forecast">
+                예측 보기 <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer" data-testid="card-market-events">
+          <Link href="/growth/events">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-green-500/10 rounded-lg">
+                  <Calendar className="w-5 h-5 text-green-500" />
+                </div>
+                <CardTitle className="text-lg">시장 이벤트</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>📅 박람회 일정</p>
+                <p>🏪 팝업 이벤트</p>
+                <p>🎪 오프라인 캘린더</p>
+              </div>
+              <Button variant="ghost" className="w-full mt-4 text-green-600 hover:text-green-700" data-testid="button-view-events">
+                이벤트 관리 <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer" data-testid="card-industry-intelligence">
+          <Link href="/growth/intelligence">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-purple-500/10 rounded-lg">
+                  <Newspaper className="w-5 h-5 text-purple-500" />
+                </div>
+                <CardTitle className="text-lg">산업 인텔리전스</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>📰 업계 업데이트</p>
+                <p>🏢 경쟁사 뉴스</p>
+                <p>📊 시장 트렌드</p>
+              </div>
+              <Button variant="ghost" className="w-full mt-4 text-purple-600 hover:text-purple-700" data-testid="button-view-intelligence">
+                인텔리전스 보기 <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="transition-all duration-200 hover:shadow-lg hover:scale-105 cursor-pointer" data-testid="card-motivation">
+          <Link href="/growth/motivation">
+            <CardHeader className="pb-3">
+              <div className="flex items-center space-x-3">
+                <div className="p-2 bg-amber-500/10 rounded-lg">
+                  <Star className="w-5 h-5 text-amber-500" />
+                </div>
+                <CardTitle className="text-lg">응원 격려</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2 text-sm text-muted-foreground">
+                <p>⭐ 오늘의 운세</p>
+                <p>🔮 올해 사주</p>
+                <p>💪 팀 격려 메시지</p>
+              </div>
+              <Button variant="ghost" className="w-full mt-4 text-amber-600 hover:text-amber-700" data-testid="button-view-motivation">
+                응원 보기 <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </CardContent>
+          </Link>
+        </Card>
+      </div>
+
       {/* KPI Cards */}
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <KPICard
