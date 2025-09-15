@@ -25,7 +25,7 @@ const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
   { name: "E-commerce Management", href: "/ecommerce", icon: ShoppingCart },
   { name: "Advertising Performance", href: "/advertising", icon: Megaphone },
-  { name: "Marketing Hub", href: "/marketing", icon: Target },
+  { name: "마케팅 허브", href: "/marketing", icon: Target },
   { name: "현금 흐름", href: "/cash-flow", icon: Wallet },
   { name: "고객 인텔리전스 허브", href: "/customer-service", icon: Headphones },
   { name: "성장 리포트", href: "/growth", icon: BarChart },
@@ -35,7 +35,7 @@ const sectionTitles: Record<string, { title: string; subtitle: string }> = {
   '/': { title: 'Dashboard Overview', subtitle: 'Real-time business insights and metrics' },
   '/ecommerce': { title: 'E-commerce Management', subtitle: 'Sales performance and order management' },
   '/advertising': { title: 'Advertising Performance', subtitle: 'Campaign metrics and ROI analysis' },
-  '/marketing': { title: 'Marketing Hub', subtitle: 'Competitive positioning and market intelligence' },
+  '/marketing': { title: '마케팅 허브', subtitle: '경쟁 포지셔닝 및 시장 인텔리전스' },
   '/cash-flow': { title: '현금 흐름', subtitle: '현금 예측 및 거래 모니터링' },
   '/customer-service': { title: '고객 인텔리전스 허브', subtitle: 'CS 만족도 트렌드 및 응답 시간 지표, 고객 문의 히트맵, 생애주기 퍼널, 자동 응답 제안' },
   '/growth': { title: '성장 리포트', subtitle: '날씨 조정 예측, 이벤트 캘린더, 뉴스 피드, 일일 운세 및 예측 인텔리전스' }
