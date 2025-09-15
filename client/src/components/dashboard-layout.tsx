@@ -23,7 +23,7 @@ import {
 
 const navigation = [
   { name: "Dashboard", href: "/", icon: Home },
-  { name: "E-commerce Management", href: "/ecommerce", icon: ShoppingCart },
+  { name: "이커머스 관리", href: "/ecommerce", icon: ShoppingCart },
   { name: "광고 퍼포먼스", href: "/advertising", icon: Megaphone },
   { name: "마케팅 허브", href: "/marketing", icon: Target },
   { name: "현금 흐름", href: "/cash-flow", icon: Wallet },
@@ -33,7 +33,7 @@ const navigation = [
 
 const sectionTitles: Record<string, { title: string; subtitle: string }> = {
   '/': { title: 'Dashboard Overview', subtitle: 'Real-time business insights and metrics' },
-  '/ecommerce': { title: 'E-commerce Management', subtitle: 'Sales performance and order management' },
+  '/ecommerce': { title: '이커머스 관리', subtitle: '주문, SKU, 재고 및 발주 관리' },
   '/advertising': { title: '광고 퍼포먼스', subtitle: '캠페인 지표 및 ROI 분석' },
   '/marketing': { title: '마케팅 허브', subtitle: '경쟁 포지셔닝 및 시장 인텔리전스' },
   '/cash-flow': { title: '현금 흐름', subtitle: '현금 예측 및 거래 모니터링' },
