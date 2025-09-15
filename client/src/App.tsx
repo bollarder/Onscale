@@ -20,6 +20,10 @@ import MarketingIntelligence from "@/pages/marketing-intelligence";
 import MarketingStrategy from "@/pages/marketing-strategy";
 import CashFlow from "@/pages/cash-flow";
 import CustomerService from "@/pages/customer-service";
+import CustomerServicePerformance from "@/pages/customer-service-performance";
+import CustomerServiceBehavior from "@/pages/customer-service-behavior";
+import CustomerServiceLifecycle from "@/pages/customer-service-lifecycle";
+import CustomerServiceImpact from "@/pages/customer-service-impact";
 import CustomerAnalytics from "@/pages/customer-analytics";
 import Growth from "@/pages/growth";
 import NotFound from "@/pages/not-found";
@@ -43,6 +47,10 @@ function Router() {
         <Route path="/marketing/strategy" component={MarketingStrategy} />
         <Route path="/cash-flow" component={CashFlow} />
         <Route path="/customer-service" component={CustomerService} />
+        <Route path="/customer-service/performance" component={CustomerServicePerformance} />
+        <Route path="/customer-service/behavior" component={CustomerServiceBehavior} />
+        <Route path="/customer-service/lifecycle" component={CustomerServiceLifecycle} />
+        <Route path="/customer-service/impact" component={CustomerServiceImpact} />
         <Route path="/customer-analytics" component={CustomerAnalytics} />
         <Route path="/growth" component={Growth} />
         <Route component={NotFound} />
