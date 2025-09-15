@@ -26,6 +26,10 @@ import CustomerServiceLifecycle from "@/pages/customer-service-lifecycle";
 import CustomerServiceImpact from "@/pages/customer-service-impact";
 import CustomerAnalytics from "@/pages/customer-analytics";
 import Growth from "@/pages/growth";
+import GrowthForecast from "@/pages/growth-forecast";
+import GrowthEvents from "@/pages/growth-events";
+import GrowthIntelligence from "@/pages/growth-intelligence";
+import GrowthMotivation from "@/pages/growth-motivation";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -53,6 +57,10 @@ function Router() {
         <Route path="/customer-service/impact" component={CustomerServiceImpact} />
         <Route path="/customer-analytics" component={CustomerAnalytics} />
         <Route path="/growth" component={Growth} />
+        <Route path="/growth/forecast" component={GrowthForecast} />
+        <Route path="/growth/events" component={GrowthEvents} />
+        <Route path="/growth/intelligence" component={GrowthIntelligence} />
+        <Route path="/growth/motivation" component={GrowthMotivation} />
         <Route component={NotFound} />
       </Switch>
     </DashboardLayout>
