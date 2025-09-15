@@ -7,6 +7,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 import DashboardLayout from "@/components/dashboard-layout";
 import Dashboard from "@/pages/dashboard";
 import Ecommerce from "@/pages/ecommerce";
+import EcommerceOrders from "@/pages/ecommerce/orders";
+import EcommerceSkuAnalytics from "@/pages/ecommerce/sku-analytics";
+import EcommercePackaging from "@/pages/ecommerce/packaging";
+import EcommerceInventory from "@/pages/ecommerce/inventory";
+import EcommerceProcurement from "@/pages/ecommerce/procurement";
 import AdvertisingHub from "@/pages/advertising-hub";
 import AdvertisingPerformance from "@/pages/advertising-performance";
 import AdvertisingCampaigns from "@/pages/advertising-campaigns";
@@ -37,6 +42,11 @@ function Router() {
       <Switch>
         <Route path="/" component={Dashboard} />
         <Route path="/ecommerce" component={Ecommerce} />
+        <Route path="/ecommerce/orders" component={EcommerceOrders} />
+        <Route path="/ecommerce/sku-analytics" component={EcommerceSkuAnalytics} />
+        <Route path="/ecommerce/packaging" component={EcommercePackaging} />
+        <Route path="/ecommerce/inventory" component={EcommerceInventory} />
+        <Route path="/ecommerce/procurement" component={EcommerceProcurement} />
         <Route path="/advertising" component={AdvertisingHub} />
         <Route path="/advertising/performance" component={AdvertisingPerformance} />
         <Route path="/advertising/campaigns" component={AdvertisingCampaigns} />
