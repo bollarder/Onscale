@@ -132,11 +132,6 @@ export class DatabaseStorage implements IStorage {
       { section: "advertising", metricName: "costPerClick", value: "$0.82", change: "+5.1%", period: "monthly" },
       { section: "advertising", metricName: "roas", value: "4.2x", change: "+12.5%", period: "monthly" },
       
-      // Cash flow metrics
-      { section: "cashflow", metricName: "cashInflow", value: "$847K", change: "+15.3%", period: "monthly" },
-      { section: "cashflow", metricName: "cashOutflow", value: "$624K", change: "+8.7%", period: "monthly" },
-      { section: "cashflow", metricName: "netCashFlow", value: "$223K", change: "+28.1%", period: "monthly" },
-      
       // Customer service metrics
       { section: "customer-service", metricName: "customerSatisfaction", value: "4.8/5", change: "+0.3", period: "monthly" },
       { section: "customer-service", metricName: "avgResponseTime", value: "2.3h", change: "-0.5h", period: "monthly" },

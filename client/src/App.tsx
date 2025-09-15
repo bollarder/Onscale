@@ -18,7 +18,6 @@ import MarketingPositioning from "@/pages/marketing-positioning";
 import MarketingPricing from "@/pages/marketing-pricing";
 import MarketingIntelligence from "@/pages/marketing-intelligence";
 import MarketingStrategy from "@/pages/marketing-strategy";
-import Cashflow from "@/pages/cashflow";
 import CashFlow from "@/pages/cash-flow";
 import CustomerService from "@/pages/customer-service";
 import CustomerAnalytics from "@/pages/customer-analytics";
@@ -42,7 +41,6 @@ function Router() {
         <Route path="/marketing/pricing" component={MarketingPricing} />
         <Route path="/marketing/intelligence" component={MarketingIntelligence} />
         <Route path="/marketing/strategy" component={MarketingStrategy} />
-        <Route path="/cashflow" component={Cashflow} />
         <Route path="/cash-flow" component={CashFlow} />
         <Route path="/customer-service" component={CustomerService} />
         <Route path="/customer-analytics" component={CustomerAnalytics} />
