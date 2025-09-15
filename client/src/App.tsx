@@ -24,7 +24,6 @@ import CustomerServicePerformance from "@/pages/customer-service-performance";
 import CustomerServiceBehavior from "@/pages/customer-service-behavior";
 import CustomerServiceLifecycle from "@/pages/customer-service-lifecycle";
 import CustomerServiceImpact from "@/pages/customer-service-impact";
-import CustomerAnalytics from "@/pages/customer-analytics";
 import Growth from "@/pages/growth";
 import GrowthForecast from "@/pages/growth-forecast";
 import GrowthEvents from "@/pages/growth-events";
@@ -55,7 +54,6 @@ function Router() {
         <Route path="/customer-service/behavior" component={CustomerServiceBehavior} />
         <Route path="/customer-service/lifecycle" component={CustomerServiceLifecycle} />
         <Route path="/customer-service/impact" component={CustomerServiceImpact} />
-        <Route path="/customer-analytics" component={CustomerAnalytics} />
         <Route path="/growth" component={Growth} />
         <Route path="/growth/forecast" component={GrowthForecast} />
         <Route path="/growth/events" component={GrowthEvents} />

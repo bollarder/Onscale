@@ -28,7 +28,6 @@ const navigation = [
   { name: "Marketing Hub", href: "/marketing", icon: Target },
   { name: "Cash Flow", href: "/cash-flow", icon: Wallet },
   { name: "고객 인텔리전스 허브", href: "/customer-service", icon: Headphones },
-  { name: "Customer Analytics", href: "/customer-analytics", icon: Users },
   { name: "성장 리포트", href: "/growth", icon: BarChart },
 ];
 
@@ -39,7 +38,6 @@ const sectionTitles: Record<string, { title: string; subtitle: string }> = {
   '/marketing': { title: 'Marketing Hub', subtitle: 'Competitive positioning and market intelligence' },
   '/cash-flow': { title: 'Cash Flow', subtitle: 'Cash forecasting and transaction monitoring' },
   '/customer-service': { title: '고객 인텔리전스 허브', subtitle: 'CS 만족도 트렌드 및 응답 시간 지표, 고객 문의 히트맵, 생애주기 퍼널, 자동 응답 제안' },
-  '/customer-analytics': { title: 'Customer Analytics', subtitle: 'Customer behavior and lifetime value' },
   '/growth': { title: '성장 리포트', subtitle: '날씨 조정 예측, 이벤트 캘린더, 뉴스 피드, 일일 운세 및 예측 인텔리전스' }
 };
 
