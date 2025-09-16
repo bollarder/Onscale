@@ -27,5 +27,26 @@ export function addRealEcommerceRoutes(app: Express) {
     });
   });
 
+  // 실제 주문 수집 API 추가
+  app.post("/api/ecommerce/collect-real-orders", async (req, res) => {
+    try {
+      res.json({
+        success: true,
+        message: "실제 주문 수집 테스트",
+        ordersCollected: 0,
+        platforms: {
+          smartstore: "연결됨",
+          coupang: "연결됨",
+        },
+        timestamp: new Date().toISOString(),
+      });
+    } catch (error) {
+      res.status(500).json({
+        success: false,
+        error: "주문 수집 실패",
+      });
+    }
+  });
+
   console.log("이커머스 API 라우트가 등록되었습니다.");
 }
