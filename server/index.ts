@@ -51,7 +51,7 @@ function startBasicSchedulers() {
         // 실제로는 알림 시스템으로 전송
       }
     } catch (error) {
-      log("재고 체크 오류: " + error.message);
+      log("재고 체크 오류: " + (error as Error).message);
     }
   });
 
@@ -64,7 +64,7 @@ function startBasicSchedulers() {
         `주문 현황 - New: ${statusCounts[0]?.count || 0}, Processing: ${statusCounts[1]?.count || 0}`,
       );
     } catch (error) {
-      log("주문 상태 체크 오류: " + error.message);
+      log("주문 상태 체크 오류: " + (error as Error).message);
     }
   });
 
@@ -84,7 +84,7 @@ function startBasicSchedulers() {
       // 간단한 일간 리포트 로그
       log("일간 리포트: 어제 비즈니스 활동 요약 생성 완료");
     } catch (error) {
-      log("일간 리포트 생성 오류: " + error.message);
+      log("일간 리포트 생성 오류: " + (error as Error).message);
     }
   });
 
@@ -198,7 +198,7 @@ function startBasicSchedulers() {
     } catch (error) {
       res
         .status(500)
-        .json({ message: "수동 알림 체크 실패", error: error.message });
+        .json({ message: "수동 알림 체크 실패", error: (error as Error).message });
     }
   });
 
@@ -216,7 +216,7 @@ function startBasicSchedulers() {
     serveStatic(app);
   }
 
-  const port = parseInt(process.env.PORT || "3000", 10);
+  const port = 3000;
   server.listen(
     {
       port,
