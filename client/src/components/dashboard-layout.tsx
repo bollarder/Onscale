@@ -18,11 +18,11 @@ import {
   Settings,
   MoreHorizontal,
   Wallet,
-  Target
+  Target,
 } from "lucide-react";
 
 const navigation = [
-  { name: "Dashboard", href: "/", icon: Home },
+  { name: "CEO 대시보드", href: "/", icon: Home },
   { name: "이커머스 관리", href: "/ecommerce", icon: ShoppingCart },
   { name: "광고 퍼포먼스", href: "/advertising", icon: Megaphone },
   { name: "마케팅 허브", href: "/marketing", icon: Target },
@@ -32,13 +32,33 @@ const navigation = [
 ];
 
 const sectionTitles: Record<string, { title: string; subtitle: string }> = {
-  '/': { title: 'Dashboard Overview', subtitle: 'Real-time business insights and metrics' },
-  '/ecommerce': { title: '이커머스 관리', subtitle: '주문, SKU, 재고 및 발주 관리' },
-  '/advertising': { title: '광고 퍼포먼스', subtitle: '캠페인 지표 및 ROI 분석' },
-  '/marketing': { title: '마케팅 허브', subtitle: '경쟁 포지셔닝 및 시장 인텔리전스' },
-  '/cash-flow': { title: '현금 흐름', subtitle: '현금 예측 및 거래 모니터링' },
-  '/customer-service': { title: '고객 인텔리전스', subtitle: 'CS 만족도 트렌드 및 응답 시간 지표, 고객 문의 히트맵, 생애주기 퍼널, 자동 응답 제안' },
-  '/growth': { title: '성장 리포트', subtitle: '날씨 조정 예측, 이벤트 캘린더, 뉴스 피드, 일일 운세 및 예측 인텔리전스' }
+  "/": {
+    title: "CEO 대시보드",
+    subtitle: "실시간 비즈니스 인사이트 및 지표",
+  },
+  "/ecommerce": {
+    title: "이커머스 관리",
+    subtitle: "주문, SKU, 재고 및 발주 관리",
+  },
+  "/advertising": {
+    title: "광고 퍼포먼스",
+    subtitle: "캠페인 지표 및 ROI 분석",
+  },
+  "/marketing": {
+    title: "마케팅 허브",
+    subtitle: "경쟁 포지셔닝 및 시장 인텔리전스",
+  },
+  "/cash-flow": { title: "현금 흐름", subtitle: "현금 예측 및 거래 모니터링" },
+  "/customer-service": {
+    title: "고객 인텔리전스",
+    subtitle:
+      "CS 만족도 트렌드 및 응답 시간 지표, 고객 문의 히트맵, 생애주기 퍼널, 자동 응답 제안",
+  },
+  "/growth": {
+    title: "성장 리포트",
+    subtitle:
+      "날씨 조정 예측, 이벤트 캘린더, 뉴스 피드, 일일 운세 및 예측 인텔리전스",
+  },
 };
 
 interface DashboardLayoutProps {
@@ -58,13 +78,13 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       }
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     handleResize(); // Check initial size
 
-    return () => window.removeEventListener('resize', handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const currentSection = sectionTitles[location] || sectionTitles['/'];
+  const currentSection = sectionTitles[location] || sectionTitles["/"];
 
   const toggleTheme = () => {
     setTheme(theme === "light" ? "dark" : "light");
@@ -86,7 +106,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <BarChart className="w-4 h-4 text-sidebar-primary-foreground" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-sidebar-foreground">ExecDash</h1>
+                <h1 className="text-lg font-bold text-sidebar-foreground">
+                  ExecDash
+                </h1>
                 <p className="text-xs text-muted-foreground">Executive Suite</p>
               </div>
             </div>
@@ -106,7 +128,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             {navigation.map((item) => {
               const isActive = location === item.href;
               const Icon = item.icon;
-              
+
               return (
                 <Link
                   key={item.name}
@@ -116,7 +138,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
                       : "text-muted-foreground hover:text-sidebar-foreground hover:bg-sidebar-accent/50"
                   }`}
-                  data-testid={`link-nav-${item.name.toLowerCase().replace(/\s+/g, '-')}`}
+                  data-testid={`link-nav-${item.name.toLowerCase().replace(/\s+/g, "-")}`}
                   onClick={() => setSidebarOpen(false)}
                 >
                   <Icon className="w-5 h-5 mr-3" />
@@ -130,14 +152,31 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="px-4 py-4 border-t border-sidebar-border">
             <div className="flex items-center space-x-3">
               <Avatar className="h-10 w-10">
-                <AvatarImage src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150" alt="Executive Profile" />
+                <AvatarImage
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=150&h=150"
+                  alt="Executive Profile"
+                />
                 <AvatarFallback>SJ</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <p className="text-sm font-medium text-sidebar-foreground" data-testid="text-user-name">Sarah Johnson</p>
-                <p className="text-xs text-muted-foreground" data-testid="text-user-role">Chief Executive Officer</p>
+                <p
+                  className="text-sm font-medium text-sidebar-foreground"
+                  data-testid="text-user-name"
+                >
+                  Sarah Johnson
+                </p>
+                <p
+                  className="text-xs text-muted-foreground"
+                  data-testid="text-user-role"
+                >
+                  Chief Executive Officer
+                </p>
               </div>
-              <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-sidebar-foreground">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-muted-foreground hover:text-sidebar-foreground"
+              >
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </div>
@@ -161,10 +200,16 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 <Menu className="h-4 w-4" />
               </Button>
               <div>
-                <h2 className="text-xl font-semibold text-foreground" data-testid="text-page-title">
+                <h2
+                  className="text-xl font-semibold text-foreground"
+                  data-testid="text-page-title"
+                >
                   {currentSection.title}
                 </h2>
-                <p className="text-sm text-muted-foreground" data-testid="text-page-subtitle">
+                <p
+                  className="text-sm text-muted-foreground"
+                  data-testid="text-page-subtitle"
+                >
                   {currentSection.subtitle}
                 </p>
               </div>
@@ -177,10 +222,19 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                 onClick={toggleTheme}
                 data-testid="button-theme-toggle"
               >
-                {theme === "light" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+                {theme === "light" ? (
+                  <Moon className="h-4 w-4" />
+                ) : (
+                  <Sun className="h-4 w-4" />
+                )}
               </Button>
               {/* Notifications */}
-              <Button variant="ghost" size="icon" className="relative" data-testid="button-notifications">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="relative"
+                data-testid="button-notifications"
+              >
                 <Bell className="h-4 w-4" />
                 <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
               </Button>
@@ -193,9 +247,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 overflow-y-auto p-6">
-          {children}
-        </main>
+        <main className="flex-1 overflow-y-auto p-6">{children}</main>
       </div>
 
       {/* Mobile overlay */}

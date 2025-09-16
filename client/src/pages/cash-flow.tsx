@@ -1,291 +1,362 @@
+// src/pages/cash-flow.tsx
+
 import { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { KPICard } from "@/components/kpi-card";
-import { ChartCard } from "@/components/chart-card";
-import { InteractiveChart } from "@/components/interactive-chart";
-import { Wallet, TrendingUp, AlertTriangle, Filter, Calendar, ArrowUpRight, ArrowDownLeft, Clock } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  Wallet,
+  TrendingUp,
+  AlertTriangle,
+  Filter,
+  Calendar,
+  ArrowUpRight,
+  ArrowDownLeft,
+  Clock,
+  DollarSign,
+  Target,
+  Settings,
+  Download,
+  Zap,
+} from "lucide-react";
+import { Line, Doughnut } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  ArcElement,
+  Tooltip,
+  Legend,
+  Filler,
+);
 
 export default function CashFlow() {
   const [transactionFilter, setTransactionFilter] = useState("all");
   const [timeFilter, setTimeFilter] = useState("week");
 
-  // 6-month cash flow forecast data
+  // 샘플 데이터 (한글화)
+  const criticalAlerts = [
+    {
+      type: "runway",
+      severity: "medium",
+      message: "현금 활주로가 4.2개월로 감소 - 비용 최적화를 고려하세요",
+      visible: true,
+    },
+    {
+      type: "spending",
+      severity: "high",
+      message: "마케팅 비용이 3개월 평균 대비 34% 증가했습니다",
+      visible: true,
+    },
+  ];
   const forecastData = {
-    labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+    labels: ["1개월", "2개월", "3개월", "4개월", "5개월", "6개월"],
     datasets: [
       {
-        label: 'Income',
-        data: [45000000, 48000000, 46000000, 52000000, 49000000, 51000000],
-        borderColor: 'rgba(16, 185, 129, 1)',
-        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+        label: "수입",
+        data: [4500, 4800, 4600, 5200, 4900, 5100],
+        borderColor: "rgba(16, 185, 129, 1)",
         fill: false,
-        tension: 0.3
+        tension: 0.3,
       },
       {
-        label: 'Expenses',
-        data: [38000000, 41000000, 39000000, 43000000, 42000000, 44000000],
-        borderColor: 'rgba(239, 68, 68, 1)',
-        backgroundColor: 'rgba(239, 68, 68, 0.1)',
+        label: "지출",
+        data: [3800, 4100, 3900, 4300, 4200, 4400],
+        borderColor: "rgba(239, 68, 68, 1)",
         fill: false,
-        tension: 0.3
-      }
-    ]
+        tension: 0.3,
+      },
+    ],
   };
-
-  // Income sources data
   const incomeSourcesData = {
-    labels: ['Product Sales', 'Subscriptions', 'Partnerships', 'Investments', 'Other'],
-    datasets: [{
-      data: [65, 20, 8, 5, 2],
-      backgroundColor: [
-        'rgba(16, 185, 129, 0.8)',
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(245, 158, 11, 0.8)',
-        'rgba(139, 92, 246, 0.8)',
-        'rgba(156, 163, 175, 0.8)'
-      ]
-    }]
+    labels: ["제품 판매", "구독", "파트너십", "투자", "기타"],
+    datasets: [
+      {
+        data: [65, 20, 8, 5, 2],
+        backgroundColor: [
+          "#10b981",
+          "#3b82f6",
+          "#f59e0b",
+          "#8b5cf6",
+          "#9ca3af",
+        ],
+      },
+    ],
   };
-
-  // Expense categories data
   const expenseCategoriesData = {
-    labels: ['Operations', 'Marketing', 'Salaries', 'Technology', 'Legal', 'Other'],
-    datasets: [{
-      data: [35, 25, 20, 12, 5, 3],
-      backgroundColor: [
-        'rgba(239, 68, 68, 0.8)',
-        'rgba(245, 158, 11, 0.8)',
-        'rgba(59, 130, 246, 0.8)',
-        'rgba(139, 92, 246, 0.8)',
-        'rgba(236, 72, 153, 0.8)',
-        'rgba(156, 163, 175, 0.8)'
-      ]
-    }]
+    labels: ["운영", "마케팅", "인건비", "기술", "법률", "기타"],
+    datasets: [
+      {
+        data: [35, 25, 20, 12, 5, 3],
+        backgroundColor: [
+          "#ef4444",
+          "#f59e0b",
+          "#3b82f6",
+          "#8b5cf6",
+          "#ec4899",
+          "#9ca3af",
+        ],
+      },
+    ],
   };
-
-  // Recent transactions data
   const transactions = [
-    { id: 1, date: '2025-09-14', type: 'income', amount: 2500000, description: 'Product Sales Revenue', category: 'Sales', status: 'completed' },
-    { id: 2, date: '2025-09-13', type: 'expense', amount: -850000, description: 'Marketing Campaign', category: 'Marketing', status: 'completed' },
-    { id: 3, date: '2025-09-13', type: 'income', amount: 1200000, description: 'Subscription Revenue', category: 'Subscriptions', status: 'completed' },
-    { id: 4, date: '2025-09-12', type: 'expense', amount: -3200000, description: 'Salary Payments', category: 'Salaries', status: 'completed' },
-    { id: 5, date: '2025-09-11', type: 'expense', amount: -450000, description: 'Office Rent', category: 'Operations', status: 'completed' },
-    { id: 6, date: '2025-09-10', type: 'income', amount: 800000, description: 'Partnership Revenue', category: 'Partnerships', status: 'pending' },
-    { id: 7, date: '2025-09-09', type: 'expense', amount: -680000, description: 'Cloud Infrastructure', category: 'Technology', status: 'completed' },
-    { id: 8, date: '2025-09-08', type: 'income', amount: 1800000, description: 'Investment Income', category: 'Investments', status: 'completed' },
-  ];
-
-  // Date filtering helper functions
-  const getDateRange = (filter: string) => {
-    const today = new Date();
-    const currentDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-    
-    switch (filter) {
-      case 'week': {
-        const startOfWeek = new Date(currentDate);
-        startOfWeek.setDate(currentDate.getDate() - currentDate.getDay()); // Start of current week (Sunday)
-        const endOfWeek = new Date(startOfWeek);
-        endOfWeek.setDate(startOfWeek.getDate() + 6); // End of current week (Saturday)
-        return { start: startOfWeek, end: endOfWeek };
-      }
-      case 'month': {
-        const startOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-        const endOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-        return { start: startOfMonth, end: endOfMonth };
-      }
-      case 'quarter': {
-        const currentQuarter = Math.floor(currentDate.getMonth() / 3);
-        const startOfQuarter = new Date(currentDate.getFullYear(), currentQuarter * 3, 1);
-        const endOfQuarter = new Date(currentDate.getFullYear(), (currentQuarter + 1) * 3, 0);
-        return { start: startOfQuarter, end: endOfQuarter };
-      }
-      default:
-        return { start: new Date(0), end: new Date() };
-    }
-  };
-
-  const filteredTransactions = transactions.filter(transaction => {
-    // Filter by transaction type
-    const typeMatch = transactionFilter === 'all' || transaction.type === transactionFilter;
-    
-    // Filter by time period
-    const transactionDate = new Date(transaction.date);
-    const { start, end } = getDateRange(timeFilter);
-    const dateMatch = transactionDate >= start && transactionDate <= end;
-    
-    return typeMatch && dateMatch;
-  });
-
-  // Alerts data
-  const alerts = [
     {
       id: 1,
-      type: 'warning',
-      title: 'Low Cash Alert',
-      message: 'Available cash below 6-month threshold',
-      severity: 'medium',
-      timestamp: '2 hours ago'
+      date: "2025-09-14",
+      type: "expense",
+      amount: -2500000,
+      description: "원료 충진기",
+      category: "포장 라인",
+      status: "완료",
     },
     {
       id: 2,
-      type: 'info',
-      title: 'Unusual Spending Pattern',
-      message: 'Marketing expenses 40% higher than last month',
-      severity: 'low',
-      timestamp: '1 day ago'
+      date: "2025-09-13",
+      type: "expense",
+      amount: -850000,
+      description: "트레핏 슬롯",
+      category: "마케팅",
+      status: "완료",
     },
     {
       id: 3,
-      type: 'success',
-      title: 'Revenue Target Met',
-      message: 'Monthly revenue goal achieved 5 days early',
-      severity: 'low',
-      timestamp: '3 days ago'
-    }
+      date: "2025-09-13",
+      type: "expense",
+      amount: -1200000,
+      description: "원심 펌프",
+      category: "포장 라인",
+      status: "완료",
+    },
+    {
+      id: 4,
+      date: "2025-09-12",
+      type: "expense",
+      amount: -3200000,
+      description: "3톤 교반 스테인리스 솥",
+      category: "제조 설비",
+      status: "완료",
+    },
   ];
+  const alerts = [
+    {
+      id: 1,
+      type: "warning",
+      title: "현금 부족 알림",
+      message: "가용 현금이 6개월 임계치 이하입니다",
+      severity: "보통",
+      timestamp: "2 시간 전",
+    },
+    {
+      id: 2,
+      type: "info",
+      title: "비정상 지출 패턴",
+      message: "마케팅 비용이 지난달 대비 40% 높습니다",
+      severity: "낮음",
+      timestamp: "1 일 전",
+    },
+    {
+      id: 3,
+      type: "success",
+      title: "매출 목표 달성",
+      message: "월 매출 목표를 5일 일찍 달성했습니다",
+      severity: "낮음",
+      timestamp: "3 일 전",
+    },
+  ];
+  const formatCurrency = (amount: number) =>
+    `₩${new Intl.NumberFormat().format(amount)}`;
+  const getAlertIcon = (type: string) =>
+    ({
+      warning: <AlertTriangle className="w-4 h-4 text-amber-500" />,
+      info: <TrendingUp className="w-4 h-4 text-blue-500" />,
+      success: <ArrowUpRight className="w-4 h-4 text-green-500" />,
+    })[type] || <AlertTriangle className="w-4 h-4 text-gray-500" />;
 
-  const formatCurrency = (amount: number) => {
-    return `₩${(amount / 1000000).toFixed(0)}M`;
-  };
-
-  const getAlertIcon = (type: string) => {
-    switch (type) {
-      case 'warning': return <AlertTriangle className="w-4 h-4 text-amber-500" />;
-      case 'info': return <TrendingUp className="w-4 h-4 text-blue-500" />;
-      case 'success': return <ArrowUpRight className="w-4 h-4 text-green-500" />;
-      default: return <AlertTriangle className="w-4 h-4 text-gray-500" />;
-    }
-  };
+  // KPICard를 임시 Card로 대체합니다.
+  const KPICard = ({
+    title,
+    value,
+    change,
+    icon,
+  }: {
+    title: string;
+    value: string;
+    change: string;
+    icon: React.ReactNode;
+  }) => (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        {icon}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground">{change}</p>
+      </CardContent>
+    </Card>
+  );
 
   return (
-    <div className="space-y-8">
-      {/* Top KPIs */}
+    <div className="space-y-8 p-4 md:p-8">
+      <h1 className="text-3xl font-bold">현금흐름 관리</h1>
+
+      {/* 긴급 재무 알림 */}
+      <div className="space-y-2">
+        {criticalAlerts
+          .filter((alert) => alert.visible)
+          .map((alert, index) => (
+            <Alert
+              key={index}
+              variant={alert.severity === "high" ? "destructive" : "default"}
+            >
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="font-medium">
+                {alert.message}
+              </AlertDescription>
+            </Alert>
+          ))}
+      </div>
+
+      {/* 상단 KPI */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <KPICard
-          title="Current Cash"
+          title="현재 보유 현금"
           value="₩180M"
           change="+5.2%"
           icon={<Wallet className="w-5 h-5 text-blue-500" />}
-          iconBgColor="bg-blue-500/10"
-          progress={85}
-          progressColor="bg-blue-500"
-          testId="kpi-current-cash"
         />
-        
         <KPICard
-          title="Available Cash"
+          title="가용 현금"
           value="₩165M"
           change="+3.8%"
           icon={<TrendingUp className="w-5 h-5 text-green-500" />}
-          iconBgColor="bg-green-500/10"
-          progress={78}
-          progressColor="bg-green-500"
-          testId="kpi-available-cash"
         />
-        
         <KPICard
-          title="Runway"
-          value="4.0 months"
-          change="-0.2 months"
+          title="런웨이"
+          value="4.0 개월"
+          change="-0.2 개월"
           icon={<Clock className="w-5 h-5 text-amber-500" />}
-          iconBgColor="bg-amber-500/10"
-          progress={40}
-          progressColor="bg-amber-500"
-          testId="kpi-runway"
         />
       </div>
 
-      {/* Main Chart and Side Charts */}
+      {/* 메인 차트와 사이드 차트 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Forecast Chart */}
-        <ChartCard
-          title="6-Month Cash Flow Forecast"
-          hasFilter={true}
-          className="lg:col-span-2"
-          testId="chart-cash-flow-forecast"
-        >
-          <InteractiveChart
-            type="line"
-            data={forecastData}
-            options={{
-              scales: {
-                y: {
-                  beginAtZero: false,
-                  ticks: {
-                    callback: function(value: any) {
-                      return '₩' + (value / 1000000) + 'M';
-                    }
-                  }
-                }
-              }
-            }}
-            testId="chart-forecast"
-          />
-        </ChartCard>
-
-        {/* Income Sources */}
-        <ChartCard
-          title="Income Sources"
-          testId="chart-income-sources"
-        >
-          <InteractiveChart
-            type="doughnut"
-            data={incomeSourcesData}
-            testId="chart-income"
-          />
-        </ChartCard>
+        {/* 6개월 현금흐름 예측 */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>6개월 현금흐름 예측</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <Line
+                data={forecastData}
+                options={{
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  scales: {
+                    y: {
+                      ticks: {
+                        callback: (value) => `₩${Number(value) / 1000}K`,
+                      },
+                    },
+                  },
+                }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+        {/* 수입원 */}
+        <Card>
+          <CardHeader>
+            <CardTitle>수입원</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <Doughnut
+                data={incomeSourcesData}
+                options={{ responsive: true, maintainAspectRatio: false }}
+              />
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
-      {/* Expense Categories and Alerts */}
+      {/* 비용 카테고리 및 알림 */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Expense Categories */}
-        <ChartCard
-          title="Expense Categories"
-          testId="chart-expense-categories"
-        >
-          <InteractiveChart
-            type="doughnut"
-            data={expenseCategoriesData}
-            testId="chart-expenses"
-          />
-        </ChartCard>
-
-        {/* Alerts */}
-        <Card className="lg:col-span-2" data-testid="card-alerts">
+        {/* 비용 카테고리 */}
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center space-x-2" data-testid="text-alerts-title">
+            <CardTitle>비용 카테고리</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="h-72">
+              <Doughnut
+                data={expenseCategoriesData}
+                options={{ responsive: true, maintainAspectRatio: false }}
+              />
+            </div>
+          </CardContent>
+        </Card>
+        {/* 알림 */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
               <AlertTriangle className="w-5 h-5 text-amber-500" />
-              <span>Alerts</span>
+              <span>알림</span>
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
               {alerts.map((alert) => (
-                <div key={alert.id} className="flex items-start space-x-3 p-3 bg-background rounded-lg border" data-testid={`alert-${alert.id}`}>
+                <div
+                  key={alert.id}
+                  className="flex items-start space-x-3 p-3 bg-background rounded-lg border"
+                >
                   <div className="flex-shrink-0 mt-0.5">
                     {getAlertIcon(alert.type)}
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between">
-                      <p className="text-sm font-medium text-foreground" data-testid={`alert-title-${alert.id}`}>
+                      <p className="text-sm font-medium text-foreground">
                         {alert.title}
                       </p>
                       <div className="flex items-center space-x-2">
-                        <Badge 
-                          variant={alert.severity === 'medium' ? 'destructive' : alert.severity === 'low' ? 'secondary' : 'default'}
-                          data-testid={`alert-severity-${alert.id}`}
+                        <Badge
+                          variant={
+                            alert.severity === "medium"
+                              ? "destructive"
+                              : "secondary"
+                          }
                         >
                           {alert.severity}
                         </Badge>
-                        <span className="text-xs text-muted-foreground" data-testid={`alert-time-${alert.id}`}>
+                        <span className="text-xs text-muted-foreground">
                           {alert.timestamp}
                         </span>
                       </div>
                     </div>
-                    <p className="text-sm text-muted-foreground mt-1" data-testid={`alert-message-${alert.id}`}>
+                    <p className="text-sm text-muted-foreground mt-1">
                       {alert.message}
                     </p>
                   </div>
@@ -296,32 +367,35 @@ export default function CashFlow() {
         </Card>
       </div>
 
-      {/* Transaction Table */}
-      <Card data-testid="card-transactions">
+      {/* 거래 내역 테이블 */}
+      <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle data-testid="text-transactions-title">Recent Transactions</CardTitle>
+            <CardTitle>설비 투자 내역</CardTitle>
             <div className="flex items-center space-x-2">
               <Select value={timeFilter} onValueChange={setTimeFilter}>
-                <SelectTrigger className="w-32" data-testid="select-time-filter">
+                <SelectTrigger className="w-32">
                   <Calendar className="w-4 h-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="week">This Week</SelectItem>
-                  <SelectItem value="month">This Month</SelectItem>
-                  <SelectItem value="quarter">This Quarter</SelectItem>
+                  <SelectItem value="week">이번 주</SelectItem>
+                  <SelectItem value="month">이번 달</SelectItem>
+                  <SelectItem value="quarter">이번 분기</SelectItem>
                 </SelectContent>
               </Select>
-              <Select value={transactionFilter} onValueChange={setTransactionFilter}>
-                <SelectTrigger className="w-32" data-testid="select-transaction-filter">
+              <Select
+                value={transactionFilter}
+                onValueChange={setTransactionFilter}
+              >
+                <SelectTrigger className="w-32">
                   <Filter className="w-4 h-4 mr-2" />
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="income">Income</SelectItem>
-                  <SelectItem value="expense">Expense</SelectItem>
+                  <SelectItem value="all">전체</SelectItem>
+                  <SelectItem value="income">수입</SelectItem>
+                  <SelectItem value="expense">지출</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -329,48 +403,74 @@ export default function CashFlow() {
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
-            <table className="w-full" data-testid="table-transactions">
+            <table className="w-full">
               <thead>
-                <tr className="border-b border-border">
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Date</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Type</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Description</th>
-                  <th className="text-left py-3 px-4 font-medium text-muted-foreground">Category</th>
-                  <th className="text-right py-3 px-4 font-medium text-muted-foreground">Amount</th>
-                  <th className="text-center py-3 px-4 font-medium text-muted-foreground">Status</th>
+                <tr className="border-b">
+                  <th className="text-left p-3 font-medium text-muted-foreground">
+                    날짜
+                  </th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">
+                    종류
+                  </th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">
+                    내용
+                  </th>
+                  <th className="text-left p-3 font-medium text-muted-foreground">
+                    카테고리
+                  </th>
+                  <th className="text-right p-3 font-medium text-muted-foreground">
+                    금액
+                  </th>
+                  <th className="text-center p-3 font-medium text-muted-foreground">
+                    상태
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {filteredTransactions.map((transaction) => (
-                  <tr key={transaction.id} className="border-b border-border hover:bg-muted/50" data-testid={`transaction-${transaction.id}`}>
-                    <td className="py-3 px-4 text-sm text-foreground" data-testid={`transaction-date-${transaction.id}`}>
-                      {transaction.date}
-                    </td>
-                    <td className="py-3 px-4">
+                {transactions.map((transaction) => (
+                  <tr
+                    key={transaction.id}
+                    className="border-b hover:bg-muted/50"
+                  >
+                    <td className="p-3 text-sm">{transaction.date}</td>
+                    <td className="p-3">
                       <div className="flex items-center space-x-2">
-                        {transaction.type === 'income' ? (
+                        {transaction.type === "income" ? (
                           <ArrowUpRight className="w-4 h-4 text-green-500" />
                         ) : (
                           <ArrowDownLeft className="w-4 h-4 text-red-500" />
                         )}
-                        <span className={`text-sm capitalize ${transaction.type === 'income' ? 'text-green-500' : 'text-red-500'}`} data-testid={`transaction-type-${transaction.id}`}>
-                          {transaction.type}
+                        <span
+                          className={`text-sm capitalize ${
+                            transaction.type === "income"
+                              ? "text-green-500"
+                              : "text-red-500"
+                          }`}
+                        >
+                          {transaction.type === "income" ? "수입" : "지출"}
                         </span>
                       </div>
                     </td>
-                    <td className="py-3 px-4 text-sm text-foreground" data-testid={`transaction-description-${transaction.id}`}>
-                      {transaction.description}
-                    </td>
-                    <td className="py-3 px-4 text-sm text-muted-foreground" data-testid={`transaction-category-${transaction.id}`}>
+                    <td className="p-3 text-sm">{transaction.description}</td>
+                    <td className="p-3 text-sm text-muted-foreground">
                       {transaction.category}
                     </td>
-                    <td className={`py-3 px-4 text-sm text-right font-medium ${transaction.amount > 0 ? 'text-green-500' : 'text-red-500'}`} data-testid={`transaction-amount-${transaction.id}`}>
+                    <td
+                      className={`p-3 text-sm text-right font-medium ${
+                        transaction.amount > 0
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
                       {formatCurrency(Math.abs(transaction.amount))}
                     </td>
-                    <td className="py-3 px-4 text-center">
-                      <Badge 
-                        variant={transaction.status === 'completed' ? 'secondary' : 'outline'}
-                        data-testid={`transaction-status-${transaction.id}`}
+                    <td className="p-3 text-center">
+                      <Badge
+                        variant={
+                          transaction.status === "completed"
+                            ? "secondary"
+                            : "outline"
+                        }
                       >
                         {transaction.status}
                       </Badge>

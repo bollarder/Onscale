@@ -1,201 +1,203 @@
-import { Link } from "wouter";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { ChartCard } from "@/components/chart-card";
-import { InteractiveChart } from "@/components/interactive-chart";
-import { ArrowRight, Target, BarChart3, Search, TrendingUp } from "lucide-react";
+// src/pages/advertising-hub.tsx
 
-export default function AdvertisingHub() {
-  // Sample ROAS trend data for overview
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Target, BarChart3, Search, TrendingUp, LineChart } from "lucide-react";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+} from "chart.js";
+
+// Chart.js에 필요한 부품들을 등록합니다.
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+);
+
+// 1. 상단 4개 요약 카드
+const AdSummaryCards = () => (
+  <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+    {/* 캠페인 카드 */}
+    <Card className="cursor-pointer hover:border-primary">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">캠페인</CardTitle>
+        <Target className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">23개 활성</div>
+        <p className="text-xs text-muted-foreground">
+          18개 목표 이상, ₩8.4M 지출
+        </p>
+        <p className="text-xs text-primary mt-2">캠페인 관리 →</p>
+      </CardContent>
+    </Card>
+
+    {/* 채널 카드 */}
+    <Card className="cursor-pointer hover:border-primary">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">채널</CardTitle>
+        <BarChart3 className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">전체 ROAS 340%</div>
+        <p className="text-xs text-muted-foreground">
+          구글 420%, 페이스북 180%, 네이버 280%
+        </p>
+        <p className="text-xs text-primary mt-2">채널 분석 →</p>
+      </CardContent>
+    </Card>
+
+    {/* 키워드 카드 */}
+    <Card className="cursor-pointer hover:border-primary">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">키워드</CardTitle>
+        <Search className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">2,847개 활성</div>
+        <p className="text-xs text-muted-foreground">156개 상위 성과</p>
+        <p className="text-xs text-primary mt-2">키워드 최적화 →</p>
+      </CardContent>
+    </Card>
+
+    {/* 리포트 카드 */}
+    <Card className="cursor-pointer hover:border-primary">
+      <CardHeader className="flex flex-row items-center justify-between pb-2">
+        <CardTitle className="text-sm font-medium">리포트</CardTitle>
+        <TrendingUp className="h-4 w-4 text-muted-foreground" />
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">+23% 주간 ROI</div>
+        <p className="text-xs text-muted-foreground">커스텀 리포트</p>
+        <p className="text-xs text-primary mt-2">리포트 보기 →</p>
+      </CardContent>
+    </Card>
+  </div>
+);
+
+// 2. 차트 및 상세 정보 구역
+const AdOverview = () => {
   const roasTrendData = {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-    datasets: [{
-      label: 'ROAS',
-      data: [3.2, 3.8, 4.1, 3.9, 4.2, 4.5],
-      borderColor: 'rgba(16, 185, 129, 1)',
-      backgroundColor: 'rgba(16, 185, 129, 0.1)',
-      fill: true,
-      tension: 0.3
-    }]
+    labels: ["1월", "2월", "3월", "4월", "5월", "6월"],
+    datasets: [
+      {
+        label: "ROAS",
+        data: [3.2, 3.8, 4.2, 3.8, 4.1, 4.8],
+        borderColor: "rgba(59, 130, 246, 1)",
+        backgroundColor: "rgba(59, 130, 246, 0.1)",
+        fill: true,
+        tension: 0.4,
+      },
+    ],
+  };
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { ticks: { color: "#888" } },
+      y: {
+        beginAtZero: true,
+        ticks: { color: "#888" },
+        grid: { color: "#444" },
+      },
+    },
   };
 
-  // Sample top campaigns data
-  const topCampaigns = [
-    { name: "Premium Watch Collection", roas: 580, spend: "₩2.1M", status: "above" },
-    { name: "Summer Fashion Sale", roas: 420, spend: "₩1.8M", status: "above" },
-    { name: "Tech Gadgets Promo", roas: 380, spend: "₩1.2M", status: "above" },
-    { name: "Holiday Special", roas: 250, spend: "₩0.9M", status: "below" },
-    { name: "New Arrivals", roas: 180, spend: "₩0.6M", status: "below" }
-  ];
-
   return (
-    <div className="space-y-8">
-      {/* Hub Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Campaigns Card */}
-        <Link href="/advertising/campaigns">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 group" data-testid="card-campaigns">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-red-500/10 rounded-lg flex items-center justify-center">
-                  <Target className="w-6 h-6 text-red-500" />
-                </div>
-                <span className="text-2xl">🎯</span>
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2" data-testid="text-campaigns-title">
-                Campaigns
-              </h3>
-              <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                <p data-testid="text-campaigns-stats">23 active, 18 above target</p>
-                <p data-testid="text-campaigns-spend">₩8.4M spend</p>
-              </div>
-              <div className="w-full flex justify-between items-center text-sm group-hover:text-primary" data-testid="link-manage-campaigns">
-                <span>Manage Campaigns</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+      {/* ROAS 트렌드 차트 */}
+      <Card className="lg:col-span-2">
+        <CardHeader>
+          <CardTitle>ROAS 추세</CardTitle>
+        </CardHeader>
+        <CardContent className="h-72">
+          <Line data={roasTrendData} options={chartOptions} />
+        </CardContent>
+      </Card>
 
-        {/* Channels Card */}
-        <Link href="/advertising/channels">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 group" data-testid="card-channels">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-blue-500/10 rounded-lg flex items-center justify-center">
-                  <BarChart3 className="w-6 h-6 text-blue-500" />
-                </div>
-                <span className="text-2xl">📊</span>
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2" data-testid="text-channels-title">
-                Channels
-              </h3>
-              <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                <p data-testid="text-channels-stats">Google 420%, Facebook 180%</p>
-                <p data-testid="text-channels-naver">Naver 280% ROAS</p>
-              </div>
-              <div className="w-full flex justify-between items-center text-sm group-hover:text-primary" data-testid="link-analyze-channels">
-                <span>Analyze Channels</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
+      {/* 월 예산 */}
+      <Card>
+        <CardHeader>
+          <CardTitle>월 예산</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-3xl font-bold mb-2">₩8.4M</div>
+          <p className="text-xs text-muted-foreground mb-4">₩10M 중 사용</p>
+          <div className="w-full bg-gray-600 rounded-full h-4">
+            <div
+              className="bg-blue-500 h-4 rounded-full"
+              style={{ width: "84%" }}
+            ></div>
+          </div>
+          <p className="text-right text-sm mt-2">84%</p>
+        </CardContent>
+      </Card>
 
-        {/* Keywords Card */}
-        <Link href="/advertising/keywords">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 group" data-testid="card-keywords">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-green-500/10 rounded-lg flex items-center justify-center">
-                  <Search className="w-6 h-6 text-green-500" />
-                </div>
-                <span className="text-2xl">🔍</span>
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2" data-testid="text-keywords-title">
-                Keywords
-              </h3>
-              <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                <p data-testid="text-keywords-stats">2,847 active</p>
-                <p data-testid="text-keywords-performers">156 top performers</p>
-              </div>
-              <div className="w-full flex justify-between items-center text-sm group-hover:text-primary" data-testid="link-optimize-keywords">
-                <span>Optimize Keywords</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-
-        {/* Reports Card */}
-        <Link href="/advertising/reports">
-          <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-200 group" data-testid="card-reports">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <div className="w-12 h-12 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                  <TrendingUp className="w-6 h-6 text-purple-500" />
-                </div>
-                <span className="text-2xl">📈</span>
-              </div>
-              <h3 className="text-lg font-semibold text-foreground mb-2" data-testid="text-reports-title">
-                Reports
-              </h3>
-              <div className="space-y-1 text-sm text-muted-foreground mb-4">
-                <p data-testid="text-reports-stats">+23% weekly ROI</p>
-                <p data-testid="text-reports-custom">Custom reports</p>
-              </div>
-              <div className="w-full flex justify-between items-center text-sm group-hover:text-primary" data-testid="link-view-reports">
-                <span>View Reports</span>
-                <ArrowRight className="w-4 h-4" />
-              </div>
-            </CardContent>
-          </Card>
-        </Link>
-      </div>
-
-      {/* Overview Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ROAS Trends */}
-        <ChartCard
-          title="ROAS Trends"
-          className="lg:col-span-2"
-          testId="chart-roas-trends"
-        >
-          <InteractiveChart
-            type="line"
-            data={roasTrendData}
-            testId="chart-roas"
-          />
-        </ChartCard>
-
-        {/* Budget Gauge */}
-        <Card data-testid="card-budget-gauge">
-          <CardContent className="p-6">
-            <h3 className="text-lg font-semibold text-foreground mb-6" data-testid="text-budget-title">
-              Monthly Budget
-            </h3>
-            <div className="space-y-4">
-              <div className="text-center">
-                <div className="text-3xl font-bold text-foreground" data-testid="text-budget-used">₩8.4M</div>
-                <div className="text-sm text-muted-foreground" data-testid="text-budget-total">of ₩12M used</div>
-              </div>
-              <Progress value={70} className="h-3" data-testid="progress-budget" />
-              <div className="flex justify-between text-sm text-muted-foreground">
-                <span data-testid="text-budget-remaining">₩3.6M remaining</span>
-                <span data-testid="text-budget-percent">70%</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Top Campaigns */}
-      <Card data-testid="card-top-campaigns">
-        <CardContent className="p-6">
-          <h3 className="text-lg font-semibold text-foreground mb-6" data-testid="text-top-campaigns-title">
-            Top Campaigns
-          </h3>
+      {/* 상위 캠페인 */}
+      <Card className="lg:col-span-3">
+        <CardHeader>
+          <CardTitle>상위 캠페인</CardTitle>
+        </CardHeader>
+        <CardContent>
           <div className="space-y-4">
-            {topCampaigns.map((campaign, index) => (
-              <div key={index} className="flex items-center justify-between" data-testid={`campaign-item-${index}`}>
-                <div className="flex items-center space-x-3">
-                  <div className={`w-3 h-3 rounded-full ${campaign.status === 'above' ? 'bg-green-500' : 'bg-red-500'}`} />
-                  <div>
-                    <p className="text-sm font-medium text-foreground" data-testid={`campaign-name-${index}`}>{campaign.name}</p>
-                    <p className="text-xs text-muted-foreground" data-testid={`campaign-spend-${index}`}>{campaign.spend} spend</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <p className={`text-sm font-semibold ${campaign.status === 'above' ? 'text-green-500' : 'text-red-500'}`} data-testid={`campaign-roas-${index}`}>
-                    {campaign.roas}% ROAS
-                  </p>
-                </div>
+            <div className="flex justify-between items-center text-sm">
+              <div>
+                <p className="font-medium">프리미엄 전통주 컬렉션</p>
+                <p className="text-xs text-muted-foreground">₩1.8M 지출</p>
               </div>
-            ))}
+              <p className="font-bold text-green-500">580% ROAS</p>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <div>
+                <p className="font-medium">여름맞이 과실주 세일</p>
+                <p className="text-xs text-muted-foreground">₩1.2M 지출</p>
+              </div>
+              <p className="font-bold text-green-500">420% ROAS</p>
+            </div>
+            <div className="flex justify-between items-center text-sm">
+              <div>
+                <p className="font-medium">명절 선물세트 프로모션</p>
+                <p className="text-xs text-muted-foreground">₩2.2M 지출</p>
+              </div>
+              <p className="font-bold text-green-500">360% ROAS</p>
+            </div>
           </div>
         </CardContent>
       </Card>
     </div>
   );
+};
+
+// 최종 광고 허브 화면 조립
+function AdvertisingHub() {
+  return (
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-bold">광고 퍼포먼스</h1>
+        <p className="text-sm text-muted-foreground">전체 채널 및 ROI 요약</p>
+      </div>
+
+      {/* 상단 4개 카드 */}
+      <AdSummaryCards />
+
+      {/* 개요: ROAS 추세, 예산, 상위 캠페인 */}
+      <AdOverview />
+    </div>
+  );
 }
+
+export default AdvertisingHub;
