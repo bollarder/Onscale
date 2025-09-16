@@ -3,28 +3,44 @@ run = "npm run dev"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
 [nix]
 channel = "stable-24_05"
+packages = ["psmisc"]
 [deployment]
 deploymentTarget = "autoscale"
 build = ["npm", "run", "build"]
 run = ["sh", "-c", "npm start"]
+
 [[ports]]
 localPort = 3000
 externalPort = 80
+
 [[ports]]
-localPort = 3000
-externalPort = 3000
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 9000
+externalPort = 9000
+
 [[ports]]
 localPort = 35243
+
 [[ports]]
 localPort = 36149
+
+[[ports]]
+localPort = 36191
+externalPort = 3000
+
 [[ports]]
 localPort = 41101
+
 [[ports]]
 localPort = 41697
+
 [[ports]]
 localPort = 44893
 [env]
-PORT = "3000"
+PORT = "9000"
 [workflows]
 runButton = "Project"
 [[workflows.workflow]]
